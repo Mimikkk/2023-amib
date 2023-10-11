@@ -1,30 +1,35 @@
 from os import makedirs
 from os.path import isdir, dirname
+from pathlib import Path
 from typing import TypeVar, Callable
 
-from constants import SaveDirectory, Serialize, Deserialize
+from constants import ResourceDirectory, Serialize, Deserialize
 
 T = TypeVar('T')
-def create(path: str, content: T, serialize: Callable[T, str] = Serialize):
-  path = pathof(path)
+def create(resource: str, content: T, serialize: Callable[T, str] = Serialize):
+  resource = pathof(resource)
 
-  if not isdir(directory := dirname(path)): makedirs(directory)
+  if not isdir(directory := dirname(resource)): makedirs(directory)
 
-  with open(path, 'wb') as file: file.write(serialize(content))
+  with open(resource, 'wb') as file: file.write(serialize(content))
 
-def read(path: str, deserialize: Callable[str, T] = Deserialize) -> T:
-  path = pathof(path)
+def read(resource: str, deserialize: Callable[str, T] = Deserialize) -> T:
+  resource = pathof(resource)
 
-  with open(path, 'rb') as file: return deserialize(file.read())
+  with open(resource, 'rb') as file: return deserialize(file.read())
 
-def pathof(path: str) -> str:
-  return f"{SaveDirectory}/{path}.serialized"
+def pathof(resource: str) -> str:
+  if resource.startswith(ResourceDirectory): return resource
+  return f"{ResourceDirectory}/{resource}.serialized"
 
-def listed() -> list[str]:
-  from os import listdir
-  from os.path import isfile, join
+def nameof(resource: str) -> str:
+  return Path(resource).name.replace('.serialized', '')
 
-  return [file for file in listdir(SaveDirectory) if isfile(join(SaveDirectory, file))]
+def names() -> list[str]:
+  return [nameof(name) for name in Path(ResourceDirectory).glob("*.serialized")]
 
 def contents() -> list[T]:
-  return [read(file) for file in listed()]
+  return [read(name) for name in names()]
+
+def entries() -> list[str, T]:
+  return [(name, read(name)) for name in names()]

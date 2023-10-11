@@ -57,7 +57,9 @@ def main(
     name: str,
 ):
   run_evolution(40, 30, name)
-  print(resources.listed())
+  print(resources.names())
+  print(resources.contents())
+  print(resources.entries())
 
 if __name__ == '__main__':
   main("test")
