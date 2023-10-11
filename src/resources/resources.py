@@ -1,3 +1,4 @@
+import dataclasses
 from os import makedirs
 from os.path import isdir, dirname
 from pathlib import Path

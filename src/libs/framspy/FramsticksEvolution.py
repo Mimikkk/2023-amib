@@ -4,11 +4,10 @@ import sys
 import numpy as np
 from deap import creator, base, tools, algorithms
 from FramsticksLib import FramsticksLib
+import resources
 
-
-# Note: this may be less efficient than running the evolution directly in Framsticks, so if performance is key, compare both options.
-
-
+OptimizationTargets: list[str]
+parsed_args: argparse.Namespace
 def genotype_within_constraint(genotype, dict_criteria_values, criterion_name, constraint_value):
   REPORT_CONSTRAINT_VIOLATIONS = False
   if constraint_value is not None:
@@ -22,8 +21,8 @@ def genotype_within_constraint(genotype, dict_criteria_values, criterion_name, c
 
 
 def frams_evaluate(frams_lib, individual):
-  BAD_FITNESS = [-1] * len(
-    OPTIMIZATION_CRITERIA)  # fitness of -1 is intended to discourage further propagation of this genotype via selection ("this genotype is very poor")
+  # fitness of -1 is intended to discourage further propagation of this genotype via selection ("this genotype is very poor")
+  BAD_FITNESS = [-1] * len(OptimizationTargets)
   genotype = individual[
     0]  # individual[0] because we can't (?) have a simple str as a deap genotype/individual, only list of str.
   data = frams_lib.evaluate([genotype])
@@ -33,7 +32,7 @@ def frams_evaluate(frams_lib, individual):
     first_genotype_data = data[0]
     evaluation_data = first_genotype_data["evaluations"]
     default_evaluation_data = evaluation_data[""]
-    fitness = [default_evaluation_data[crit] for crit in OPTIMIZATION_CRITERIA]
+    fitness = [default_evaluation_data[crit] for crit in OptimizationTargets]
   except (KeyError,
           TypeError) as e:  # the evaluation may have failed for an invalid genotype (such as X[@][@] with "Don't simulate genotypes with warnings" option) or for some other reason
     valid = False
@@ -74,8 +73,8 @@ def frams_getsimplest(frams_lib, genetic_format, initial_genotype):
   return initial_genotype if initial_genotype is not None else frams_lib.getSimplest(genetic_format)
 
 
-def prepareToolbox(frams_lib, OPTIMIZATION_CRITERIA, tournament_size, genetic_format, initial_genotype):
-  creator.create("FitnessMax", base.Fitness, weights=[1.0] * len(OPTIMIZATION_CRITERIA))
+def prepare_toolbox(frams_lib, tournament_size, genetic_format, initial_genotype):
+  creator.create("FitnessMax", base.Fitness, weights=[1.0] * len(OptimizationTargets))
   creator.create("Individual", list, fitness=creator.FitnessMax)
 
   toolbox = base.Toolbox()
@@ -85,20 +84,21 @@ def prepareToolbox(frams_lib, OPTIMIZATION_CRITERIA, tournament_size, genetic_fo
   toolbox.register("evaluate", frams_evaluate, frams_lib)
   toolbox.register("mate", frams_crossover, frams_lib)
   toolbox.register("mutate", frams_mutate, frams_lib)
-  if len(OPTIMIZATION_CRITERIA) <= 1:
+
+  if len(OptimizationTargets) <= 1:
     toolbox.register("select", tools.selTournament, tournsize=tournament_size)
   else:
     toolbox.register("select", tools.selNSGA2)
+
   return toolbox
 
 
-def parseArguments():
-  print("args:", sys.argv)
+def parse_arguments():
   parser = argparse.ArgumentParser(
     description='Run this program with "python -u %s" if you want to disable buffering of its output.' % sys.argv[0])
   parser.add_argument(
     '-path',
-    type=ensureDir,
+    type=ensure_dir,
     required=True,
     help='Path to Framsticks library without trailing slash.'
   )
@@ -206,62 +206,80 @@ def parseArguments():
   return parser.parse_args()
 
 
-def ensureDir(string):
+def ensure_dir(string):
   if os.path.isdir(string):
     return string
   else:
     raise NotADirectoryError(string)
 
 
-def save_genotypes(filename, OPTIMIZATION_CRITERIA, hof):
+def save_genotypes(population):
   from framsfiles import writer as framswriter
 
-  with open(filename, "w") as outfile:
-    for ind in hof:
-      keyval = {}
-      for i, k in enumerate(OPTIMIZATION_CRITERIA):
-        # TODO it would be better to save in Individual (after evaluation) all fields returned by Framsticks, and get these fields here, not just the criteria that were actually used as fitness in evolution.
-        keyval[k] = ind.fitness.values[i]
-      outfile.write(framswriter.from_collection({"_classname": "org", "genotype": ind[0], **keyval}))
-      outfile.write("\n")
-  print("Saved '%s' (%d)" % (filename, len(hof)))
+  # TODO it would be better to save in Individual (after evaluation) all fields returned by Framsticks, and get these fields here, not just the criteria that were actually used as fitness in evolution.
+  for individual in population:
+    yield (
+      framswriter.from_collection(
+        {
+          "_classname": "org",
+          "genotype": individual[0],
+        } | {
+          criteria: individual.fitness.values[index] for index, criteria in enumerate(OptimizationTargets)
+        }
+      )
+    )
 
 
 def main():
-  global parsed_args, OPTIMIZATION_CRITERIA
+  global parsed_args, OptimizationTargets
+
+  parsed_args = parse_arguments()
+
+  print(
+    "Argument values:",
+    ", ".join([f'{argument}={getattr(parsed_args, argument)}' for argument in vars(parsed_args)])
+  )
+
+  OptimizationTargets = parsed_args.opt.split(",")
 
   FramsticksLib.DETERMINISTIC = False
-  parsed_args = parseArguments()
-  print("Argument values:", ", ".join(['%s=%s' % (arg, getattr(parsed_args, arg)) for arg in vars(parsed_args)]))
-  OPTIMIZATION_CRITERIA = parsed_args.opt.split(",")
-  framsLib = FramsticksLib(parsed_args.path, parsed_args.lib, parsed_args.sim)
-  toolbox = prepareToolbox(framsLib, OPTIMIZATION_CRITERIA, parsed_args.tournament,
-                           '1' if parsed_args.genformat is None else parsed_args.genformat, parsed_args.initialgenotype)
-  pop = toolbox.population(n=parsed_args.popsize)
-  hof = tools.HallOfFame(parsed_args.hof_size)
-  stats = tools.Statistics(lambda ind: ind.fitness.values)
-  stats.register("avg", np.mean)
-  stats.register("stddev", np.std)
-  stats.register("min", np.min)
-  stats.register("max", np.max)
+  frams_lib = FramsticksLib(parsed_args.path, parsed_args.lib, parsed_args.sim)
+
+  toolbox = prepare_toolbox(
+    frams_lib,
+    parsed_args.tournament,
+    '1' if parsed_args.genformat is None else parsed_args.genformat,
+    parsed_args.initialgenotype
+  )
+
+  population = toolbox.population(n=parsed_args.popsize)
+  best_population = tools.HallOfFame(parsed_args.hof_size)
+  statistics = tools.Statistics(lambda ind: ind.fitness.values)
+
+  statistics.register("avg", np.mean)
+  statistics.register("stddev", np.std)
+  statistics.register("min", np.min)
+  statistics.register("max", np.max)
 
   algorithms.eaSimple(
-    pop,
+    population,
     toolbox,
     cxpb=parsed_args.pxov,
     mutpb=parsed_args.pmut,
     ngen=parsed_args.generations,
-    stats=stats,
-    halloffame=hof,
-    verbose=True
+    stats=statistics,
+    halloffame=best_population,
   )
 
-  print('Best individuals:')
-  for ind in hof: print(ind.fitness, '\t-->\t', ind[0])
+  print(
+    'Best individuals:',
+    [f'{individual.fitness}\t-->\t{individual[0]}' for individual in best_population],
+    sep='\n'
+  )
 
   if parsed_args.hof_savefile is not None:
-    save_genotypes(parsed_args.hof_savefile, OPTIMIZATION_CRITERIA, hof)
-
+    resources.create(f"{parsed_args.hof_savefile}_genotype", '\n'.join(save_genotypes(best_population)))
+    resources.create(f"{parsed_args.hof_savefile}_stats", statistics.compile(population))
 
 if __name__ == "__main__":
   main()

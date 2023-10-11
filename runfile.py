@@ -2,7 +2,7 @@ import asyncio
 from dataclasses import dataclass
 import subprocess
 import timeit
-from typing import Literal, Any
+from typing import Literal, Any, Callable
 
 import constants
 import resources
@@ -20,69 +20,66 @@ class command(object):
   mutation_probability: float | None = None
   crossover_probability: float | None = None
   hall_of_fame_size: int | None = None
-  hall_of_fame_path: str | None = None
+  name: str | None = None
   max_part_count: int | None = None
   max_connection_count: int | None = None
   max_genotype_length: int | None = None
-  opt: str | None = None
+  optimization_targets: list[str] | None = None
 
-  def as_arguments(self):
-    def with_optional_flags(initial: list[str], *flags: tuple[str, Any]):
-      for (name, value) in flags:
+  def __iter__(self):
+    def with_optional_flags(initial: list[str], *flags: tuple[str, Any, Callable[Any, str]]):
+      for (name, value, *args) in flags:
         if value is None: continue
-        initial.extend([f'-{name}', str(value)])
+        converter = str if len(args) == 0 else args[0]
+        initial.extend([f'-{name}', converter(value)])
       return initial
 
-    return with_optional_flags(
+    return iter(with_optional_flags(
       [constants.Python, constants.Runfile],
       ("path", constants.Library),
-      ("opt", self.opt),
+      ("opt", self.optimization_targets, ",".join),
       ("popsize", self.population),
       ("generations", self.generations),
-      ("sims", self.sims),
+      ("sims", self.sims, ';'.join),
       ("genformat", self.genetic_format),
       ("initialgenotype", self.initial_genotype),
       ("tournament", self.tournament_size),
       ("pmut", self.mutation_probability),
       ("pxov", self.crossover_probability),
       ("hof_size", self.hall_of_fame_size),
-      ("hof_savefile", self.hall_of_fame_path),
+      ("hof_savefile", self.name),
       ("max_numparts", self.max_part_count),
       ("max_numconnections", self.max_connection_count),
       ("max_genotype_length", self.max_genotype_length),
-    )
-
-  def __iter__(self):
-    return iter(self.as_arguments())
+    ))
 
 async def run_evolution(
     population: int,
     generations: int,
-    hall_of_fame_path: str,
+    name: str,
 
 ):
-  return await (await asyncio.create_subprocess_exec(
+  process = await asyncio.create_subprocess_exec(
     *command(
-      opt="vertpos",
+      optimization_targets=["vertpos"],
       population=population,
       generations=generations,
-      hall_of_fame_path=resources.pathof(hall_of_fame_path)
+      name=name
     ),
     stdout=asyncio.subprocess.PIPE,
     stdin=asyncio.subprocess.PIPE,
-  )).communicate()
+  )
+
+  return await process.communicate()
 
 
 @utils.timed
 async def main(
     name: str,
 ):
-  await asyncio.gather(run_evolution(40, 1, "a"))
-
-@utils.timed
-def foo():
-  for _ in range(100000000): continue
+  # await asyncio.gather(run_evolution(40, 1, "a"))
+  print(resources.read('a_stats'))
+  print(resources.read('a_genotype'))
 
 if __name__ == '__main__':
-  foo()
   asyncio.run(main("named"))

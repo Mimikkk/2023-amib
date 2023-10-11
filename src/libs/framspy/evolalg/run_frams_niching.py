@@ -11,7 +11,7 @@ def main():
     print("Argument values:", ", ".join(
         ['%s=%s' % (arg, getattr(parsed_args, arg)) for arg in vars(parsed_args)]))
     # multiple criteria not supported here. If needed, use FramsticksEvolution.py
-    opt_criteria = parsed_args.opt.split(",")
+    opt_criteria = parsed_args.optimization_targets.split(",")
     framsLib = FramsticksLib(
         parsed_args.pathof, parsed_args.lib, parsed_args.sim)
     constrains = {"max_numparts": parsed_args.max_numparts,
