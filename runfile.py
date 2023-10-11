@@ -1,4 +1,6 @@
+import asyncio
 from dataclasses import dataclass
+import subprocess
 from typing import Literal, Any
 
 import constants
@@ -19,16 +21,19 @@ class command(object):
   max_part_count: int | None = None
   max_connection_count: int | None = None
   max_genotype_length: int | None = None
+  opt: str | None = None
 
-  @property
-  def flags(self):
-    def with_optional_flags(initial: list[str], *conditional: tuple[str, Any]):
-      initial.extend(f"-{name} {value}" for (name, value) in conditional if value is not None)
+  def as_arguments(self):
+    def with_optional_flags(initial: list[str], *flags: tuple[str, Any]):
+      for (name, value) in flags:
+        if value is None: continue
+        initial.extend([f'-{name}', str(value)])
       return initial
 
     return with_optional_flags(
       [constants.Python, constants.Runfile],
       ("path", constants.Library),
+      ("opt", self.opt),
       ("popsize", self.population),
       ("generations", self.generations),
       ("sims", self.sims),
@@ -44,22 +49,32 @@ class command(object):
       ("max_genotype_length", self.max_genotype_length),
     )
 
-def run_evolution(
+  def __iter__(self):
+    return iter(self.as_arguments)
+
+async def run_evolution(
     population: int,
     generations: int,
     hall_of_fame_path: str,
 
 ):
-  print((command(population=population, generations=generations,
-                 hall_of_fame_path=resources.pathof(hall_of_fame_path)).flags))
+  process = await asyncio.create_subprocess_exec(
+    *command(
+      opt="vertpos",
+      population=population,
+      generations=generations,
+      hall_of_fame_path=resources.pathof(hall_of_fame_path)
+    ),
+    stdout=asyncio.subprocess.PIPE,
+    stdin=asyncio.subprocess.PIPE,
+  )
+  return await process.communicate()
 
-def main(
+
+async def main(
     name: str,
 ):
-  run_evolution(40, 30, name)
-  print(resources.names())
-  print(resources.contents())
-  print(resources.entries())
+  print(await run_evolution(40, 1, name))
 
 if __name__ == '__main__':
-  main("test")
+  asyncio.run(main("named"))
