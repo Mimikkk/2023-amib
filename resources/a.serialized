@@ -1,25 +1,25 @@
 org:
-genotype:X[G]
+genotype:RX
 vertpos:-0.01
 
 org:
-genotype:qX
+genotype:LX
 vertpos:-0.01
 
 org:
-genotype:CX
+genotype:rX
 vertpos:-0.01
 
 org:
-genotype:X[|]
+genotype:IX
 vertpos:-0.01
 
 org:
-genotype:iX
+genotype:X[S]
 vertpos:-0.01
 
 org:
-genotype:lX
+genotype:MX
 vertpos:-0.01
 
 org:
@@ -27,11 +27,11 @@ genotype:X[@]
 vertpos:-0.01
 
 org:
-genotype:X[T]
+genotype:FX
 vertpos:-0.01
 
 org:
-genotype:X[S]
+genotype:qX
 vertpos:-0.01
 
 org:

@@ -1,11 +1,13 @@
 import asyncio
 from dataclasses import dataclass
 import subprocess
+import timeit
 from typing import Literal, Any
 
 import constants
 import resources
 import serializer
+import utils
 
 @dataclass
 class command(object):
@@ -51,7 +53,7 @@ class command(object):
     )
 
   def __iter__(self):
-    return iter(self.as_arguments)
+    return iter(self.as_arguments())
 
 async def run_evolution(
     population: int,
@@ -59,7 +61,7 @@ async def run_evolution(
     hall_of_fame_path: str,
 
 ):
-  process = await asyncio.create_subprocess_exec(
+  return await (await asyncio.create_subprocess_exec(
     *command(
       opt="vertpos",
       population=population,
@@ -68,15 +70,19 @@ async def run_evolution(
     ),
     stdout=asyncio.subprocess.PIPE,
     stdin=asyncio.subprocess.PIPE,
-  )
-  return await process.communicate()
+  )).communicate()
 
 
+@utils.timed
 async def main(
     name: str,
 ):
-  # print(await run_evolution(40, 1, name))
-  print(resources.read(name, deserializer=serializer.utf8))
+  await asyncio.gather(run_evolution(40, 1, "a"))
+
+@utils.timed
+def foo():
+  for _ in range(100000000): continue
 
 if __name__ == '__main__':
+  foo()
   asyncio.run(main("named"))
