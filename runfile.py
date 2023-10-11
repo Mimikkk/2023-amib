@@ -5,6 +5,7 @@ from typing import Literal, Any
 
 import constants
 import resources
+import serializer
 
 @dataclass
 class command(object):
@@ -74,7 +75,8 @@ async def run_evolution(
 async def main(
     name: str,
 ):
-  print(await run_evolution(40, 1, name))
+  # print(await run_evolution(40, 1, name))
+  print(resources.read(name, deserializer=serializer.utf8))
 
 if __name__ == '__main__':
   asyncio.run(main("named"))

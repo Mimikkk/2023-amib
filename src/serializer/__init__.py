@@ -1,1 +1,1 @@
-from .serializer import serialize, deserialize
+from .serializer import serialize, deserialize, utf8
