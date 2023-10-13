@@ -59,6 +59,12 @@ class Arguments(object):
       required=True,
       help='Path to Framsticks library without trailing slash.'
     ).add(
+      '-opt',
+      required=True,
+      help='optimization criteria: vertpos, velocity, distance, vertvel, lifespan, numjoints, numparts, numneurons, '
+           'numconnections (or other as long as it is provided by the .sim file and its .expdef). For multiple criteria '
+           'optimization, separate the names by the comma.'
+    ).add(
       '-lib',
       required=False,
       help='Library name. If not given, "frams-objects.dll" (or .so or .dylib) is assumed depending on the platform.'
@@ -77,12 +83,6 @@ class Arguments(object):
       '-initialgenotype',
       required=False,
       help='The genotype used to seed the initial population. If given, the -genformat argument is ignored.'
-    ).add(
-      '-opt',
-      required=True,
-      help='optimization criteria: vertpos, velocity, distance, vertvel, lifespan, numjoints, numparts, numneurons, '
-           'numconnections (or other as long as it is provided by the .sim file and its .expdef). For multiple criteria '
-           'optimization, separate the names by the comma.'
     ).add(
       '-popsize',
       required=False,
@@ -288,8 +288,8 @@ def main():
   )
 
   if not constants.hof_savefile: return
-  resources.create(f"{constants.hof_savefile}_genotype", '\n'.join(save_genotypes(best_population)))
-  resources.create(f"{constants.hof_savefile}_stats", statistics.compile(population))
+  resources.create(f"{constants.hof_savefile}_genotype.gen", '\n'.join(save_genotypes(best_population)))
+  resources.create(f"{constants.hof_savefile}_stats.gen", statistics.compile(population))
 
 if __name__ == "__main__":
   main()

@@ -20,8 +20,10 @@ class command(object):
   mutation_probability: float | None = None
   crossover_probability: float | None = None
   hall_of_fame_size: int | None = None
-  name: str | None = None
+  savefile: str | None = None
   max_part_count: int | None = None
+  max_joint_count: int | None = None
+  max_neuron_count: int | None = None
   max_connection_count: int | None = None
   max_genotype_length: int | None = None
   optimization_targets: list[OptimizationTarget] | None = None
@@ -38,19 +40,21 @@ class command(object):
       [constants.Python, constants.Runfile],
       ("path", constants.Library),
       ("opt", self.optimization_targets, ",".join),
-      ("popsize", self.population),
-      ("generations", self.generations),
-      ("sims", self.sims, ';'.join),
+      ("sim", self.sims, ';'.join),
       ("genformat", self.genetic_format),
       ("initialgenotype", self.initial_genotype),
+      ("popsize", self.population),
+      ("generations", self.generations),
       ("tournament", self.tournament_size),
       ("pmut", self.mutation_probability),
       ("pxov", self.crossover_probability),
       ("hof_size", self.hall_of_fame_size),
-      ("hof_savefile", self.name),
+      ("hof_savefile", self.savefile),
       ("max_numparts", self.max_part_count),
+      ("max_numjoints", self.max_joint_count),
+      ("max_numneurons", self.max_neuron_count),
       ("max_numconnections", self.max_connection_count),
-      ("max_genotype_length", self.max_genotype_length),
+      ("max_numgenochars", self.max_genotype_length),
     ))
 
   async def __call__(self):

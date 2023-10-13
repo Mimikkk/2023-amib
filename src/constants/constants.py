@@ -7,5 +7,6 @@ Python: str = 'venv/Scripts/python.exe'
 Library: str = 'src/libs/Framsticks50rc29'
 Runfile: str = 'src/libs/framspy/FramsticksEvolution.py'
 ResourceDirectory: str = './resources'
+SimDirectory: str = './src/libs/Framsticks50rc29/data'
 Serialize: Callable[T, str] = serialize
 Deserialize: Callable[str, T] = deserialize

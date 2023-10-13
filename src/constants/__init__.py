@@ -1,1 +1,1 @@
-from .constants import Serialize, Deserialize, Runfile, ResourceDirectory, Python, Library
+from .constants import Serialize, Deserialize, Runfile, ResourceDirectory, Python, Library, SimDirectory
