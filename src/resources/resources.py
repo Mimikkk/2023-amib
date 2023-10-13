@@ -1,33 +1,47 @@
-import dataclasses
 from os import makedirs
 from os.path import isdir, dirname
 from pathlib import Path
-from typing import TypeVar, Callable
+from typing import TypeVar, Literal
 
-from constants import ResourceDirectory, Serialize, Deserialize
+from constants import ResourceDirectory
+from serializer import json_serialize, json_deserialize, text_serialize, text_deserialize
 
 T = TypeVar('T')
-def create(resource: str, content: T, serializer: Callable[T, str] = Serialize):
-  resource = pathof(resource)
+Format = Literal['json', 'text', 'gen']
+def create(resource: str, content: T, *, mode: Literal['w', 'wb'] = 'w', format: Format = 'json'):
+  resource = pathof(resource, format)
 
   if not isdir(directory := dirname(resource)): makedirs(directory)
 
-  with open(resource, 'wb') as file: file.write(serializer(content))
+  if format == 'json': serializer = json_serialize
+  elif format == 'text' or format == 'gen': serializer = text_serialize
+  else: raise ValueError(f"Unknown extension: {format}")
 
-def read(resource: str, deserializer: Callable[str, T] = Deserialize) -> T:
-  resource = pathof(resource)
+  with open(resource, mode) as file: file.write(serializer(content))
 
-  with open(resource, 'rb') as file: return deserializer(file.read())
+def read(
+    resource: str,
+    *,
+    mode: Literal['r', 'rb'] = 'r',
+    format: Format = 'json',
+) -> T:
+  resource = pathof(resource, format)
 
-def pathof(resource: str) -> str:
+  if format == 'json': deserializer = json_deserialize
+  elif format == 'text' or format == 'gen': deserializer = text_deserialize
+  else: raise ValueError(f"Unknown extension: {format}")
+
+  with open(resource, mode) as file: return deserializer(file.read())
+
+def pathof(resource: str, format: Format) -> str:
   if resource.startswith(ResourceDirectory): return resource
-  return f"{ResourceDirectory}/{resource}.gen"
+  return f"{ResourceDirectory}/{resource}.{format}"
 
 def nameof(resource: str) -> str:
-  return Path(resource).name.replace('.gen', '')
+  return Path(resource).name.replace('.json', '').replace('.gen', '').replace('.text', '')
 
 def names() -> list[str]:
-  return [nameof(name) for name in Path(ResourceDirectory).glob("*.gen")]
+  return [nameof(name) for name in Path(ResourceDirectory).glob("*.json|*.gen|*.text")]
 
 def contents() -> list[T]:
   return [read(name) for name in names()]

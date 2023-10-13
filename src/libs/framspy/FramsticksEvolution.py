@@ -288,8 +288,8 @@ def main():
   )
 
   if not constants.hof_savefile: return
-  resources.create(f"{constants.hof_savefile}_genotype.gen", '\n'.join(save_genotypes(best_population)))
-  resources.create(f"{constants.hof_savefile}_stats.gen", statistics.compile(population))
+  resources.create(f"{constants.hof_savefile}_genotype", '\n'.join(save_genotypes(best_population)), format='text')
+  resources.create(f"{constants.hof_savefile}_stats", statistics.compile(population), format='json')
 
 if __name__ == "__main__":
   main()

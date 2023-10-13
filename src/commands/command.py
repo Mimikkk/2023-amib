@@ -40,7 +40,7 @@ class command(object):
       [constants.Python, constants.Runfile],
       ("path", constants.Library),
       ("opt", self.optimization_targets, ",".join),
-      ("sim", self.sims, ';'.join),
+      ("sim", self.sims, lambda sims: ';'.join([sim if sim.endswith('.sim') else f"{sim}.sim" for sim in sims])),
       ("genformat", self.genetic_format),
       ("initialgenotype", self.initial_genotype),
       ("popsize", self.population),

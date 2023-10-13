@@ -3,7 +3,6 @@ import asyncio
 import numpy as np
 
 from commands import command
-import resources
 import sims
 
 async def main():
@@ -25,7 +24,7 @@ async def main():
         optimization_targets=["vertpos"],
         population=5,
         generations=1,
-        sims=[f'eval-allcriteria.sim', "deterministic.sim", 'sample-period-2.sim', f'{name}.sim'],
+        sims=[f'eval-allcriteria', "deterministic", 'sample-period-2', name],
         initial_genotype='/*9*/BLU',
         max_part_count=30,
         max_genotype_length=50,
