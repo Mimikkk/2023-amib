@@ -1,0 +1,35 @@
+{
+  "genotypes": [
+    {
+      "_classname": "org",
+      "genotype": "/*9*/RFUUU",
+      "vertpos": 0.8113964124686199
+    },
+    {
+      "_classname": "org",
+      "genotype": "/*9*/DDFRU",
+      "vertpos": 0.5832250096568227
+    },
+    {
+      "_classname": "org",
+      "genotype": "/*9*/DDBRU",
+      "vertpos": 0.5829507088928488
+    },
+    {
+      "_classname": "org",
+      "genotype": "/*9*/BUDLUU",
+      "vertpos": 0.5801254048852732
+    },
+    {
+      "_classname": "org",
+      "genotype": "/*9*/DLFULRU",
+      "vertpos": 0.5508789361124917
+    }
+  ],
+  "statistics": {
+    "avg": 0.6217152944032112,
+    "stddev": 0.09561446566937168,
+    "min": 0.5508789361124917,
+    "max": 0.8113964124686199
+  }
+}

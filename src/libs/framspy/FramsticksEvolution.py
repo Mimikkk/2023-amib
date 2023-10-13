@@ -287,8 +287,10 @@ def main():
 
   from framsfiles import writer as framswriter
   if not constants.hof_savefile: return
-  resources.create(f"{constants.hof_savefile}_genotype", {"genotypes": list(save_genotypes(best_population))}, format='json')
-  resources.create(f"{constants.hof_savefile}_stats", statistics.compile(population), format='json')
+  resources.create(constants.hof_savefile, {
+    "genotypes": list(save_genotypes(best_population)),
+    "statistics": statistics.compile(best_population),
+  }, format='json')
 
 if __name__ == "__main__":
   main()

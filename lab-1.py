@@ -28,7 +28,7 @@ async def main():
         initial_genotype='/*9*/BLU',
         max_part_count=30,
         max_genotype_length=50,
-        hall_of_fame_size=1,
+        hall_of_fame_size=5,
         verbose=True
       )()
     )
