@@ -20,13 +20,14 @@ class command(object):
   mutation_probability: float | None = None
   crossover_probability: float | None = None
   hall_of_fame_size: int | None = None
-  savefile: str | None = None
+  name: str | None = None
   max_part_count: int | None = None
   max_joint_count: int | None = None
   max_neuron_count: int | None = None
   max_connection_count: int | None = None
   max_genotype_length: int | None = None
   optimization_targets: list[OptimizationTarget] | None = None
+  verbose: bool = False
 
   def __iter__(self):
     def with_optional_flags(initial: list[str], *flags: tuple[str, Any, Callable[Any, str]]):
@@ -49,7 +50,7 @@ class command(object):
       ("pmut", self.mutation_probability),
       ("pxov", self.crossover_probability),
       ("hof_size", self.hall_of_fame_size),
-      ("hof_savefile", self.savefile),
+      ("hof_savefile", self.name),
       ("max_numparts", self.max_part_count),
       ("max_numjoints", self.max_joint_count),
       ("max_numneurons", self.max_neuron_count),
@@ -64,4 +65,10 @@ class command(object):
       stdin=asyncio.subprocess.PIPE,
     )
 
-    return await process.communicate()
+    if self.verbose: print(f"Verbose: Command '{self.name}' Started...")
+
+    result = await process.communicate()
+
+    if self.verbose: print(f"Verbose: Command '{self.name}' Finished.")
+
+    return result

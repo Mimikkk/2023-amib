@@ -20,15 +20,16 @@ async def main():
 
     commands.append(
       command(
-        savefile=f"HoF-{name}",
+        name=f"HoF-{name}",
         optimization_targets=["vertpos"],
-        population=5,
-        generations=1,
+        population=50,
+        generations=20,
         sims=[f'eval-allcriteria', "deterministic", 'sample-period-2', name],
         initial_genotype='/*9*/BLU',
         max_part_count=30,
         max_genotype_length=50,
         hall_of_fame_size=1,
+        verbose=True
       )()
     )
 
