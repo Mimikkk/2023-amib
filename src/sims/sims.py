@@ -5,16 +5,23 @@ from constants import SimDirectory
 
 def trim_common_space_count(content: str) -> str:
   lines = content.splitlines()
-  common_space_count = min([len(line) - len(line.lstrip()) for line in lines if line.strip() != ''])
-  trimmed_lines = [line[common_space_count:] for line in lines]
-  return '\n'.join(trimmed_lines)
+  count = min([len(line) - len(line.lstrip()) for line in lines if line.strip() != ''])
+  return '\n'.join(line[count:] for line in lines)
+
+def trim_right_spaces(content: str) -> str:
+  return '\n'.join(line.rstrip() for line in content.splitlines())
 
 def remove_first_newlines(content: str) -> str:
-  return content.lstrip('\r\n')
+  return content.strip('\r\n')
+
+def append_newline(content: str) -> str:
+  return content + '\n'
 
 def prepare(content: str) -> str:
   content = trim_common_space_count(content)
   content = remove_first_newlines(content)
+  content = trim_right_spaces(content)
+  content = append_newline(content)
   return content
 
 def create(sim: str, content: str):

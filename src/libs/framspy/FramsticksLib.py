@@ -69,9 +69,9 @@ class FramsticksLib:
 			ec.store = 2;  # store all, because they are caught by MessageCatcher and will not appear in output (which we want)
 			frams.Simulator.ximport(simfile, 4 + 8 + 16)
 			ec.close()
-			print(ec.messages)  # output all caught messages
+			# make missing files or incorrect paths fatal because error messages are easy to overlook in output, and these errors would not prevent Framsticks simulator from performing genetic operations, starting and running in evaluate()
 			if ec.error_count._value() > 0:
-				raise ValueError("Problem while importing file '%s'" % simfile)  # make missing files or incorrect paths fatal because error messages are easy to overlook in output, and these errors would not prevent Framsticks simulator from performing genetic operations, starting and running in evaluate()
+				raise ValueError("Problem while importing file '%s'" % simfile)
 
 
 	def getSimplest(self, genetic_format) -> str:
