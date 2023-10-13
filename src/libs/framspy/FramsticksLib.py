@@ -364,12 +364,12 @@ if __name__ == "__main__":
 	# - check_validity with three levels (invalid, corrected, valid)
 	# - a pool of binaries running simultaneously, balance load - in particular evaluation
 
-	parsed_args = parseArguments()
-	framsLib = FramsticksLib(parsed_args.path, parsed_args.lib, parsed_args.simsettings)
+	constants = parseArguments()
+	framsLib = FramsticksLib(constants.path, constants.lib, constants.simsettings)
 
 	print("Sending a direct command to Framsticks library that calculates \"4\"+2 yields", frams.Simulator.eval("return \"4\"+2;"))
 
-	simplest = framsLib.getSimplest('1' if parsed_args.genformat is None else parsed_args.genformat)
+	simplest = framsLib.getSimplest('1' if constants.genformat is None else constants.genformat)
 	print("\tSimplest genotype:", simplest)
 	parent1 = framsLib.mutate([simplest])[0]
 	parent2 = parent1

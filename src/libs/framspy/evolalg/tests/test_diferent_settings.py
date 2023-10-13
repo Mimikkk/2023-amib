@@ -108,7 +108,7 @@ def test_run_experiment_frams_niching(params):
     # multiple criteria not supported here. If needed, use FramsticksEvolution.py
     opt_criteria = params['opt'].split(",")
     framsLib = FramsticksLib(
-        parsed_args.path, parsed_args.lib, parsed_args.sim)
+        constants.path, constants.lib, constants.sim)
     constrains = {"max_numparts": params['max_numparts'],
                   "max_numjoints": params['max_numjoints'],
                   "max_numneurons": params['max_numneurons'],
@@ -140,7 +140,7 @@ def test_run_experiment_frams_island(params):
     # multiple criteria not supported here. If needed, use FramsticksEvolution.py
     opt_criteria = params['opt'].split(",")
     framsLib = FramsticksLib(
-        parsed_args.path, parsed_args.lib, parsed_args.sim)
+        constants.path, constants.lib, constants.sim)
     constrains = {"max_numparts": params['max_numparts'],
                   "max_numjoints": params['max_numjoints'],
                   "max_numneurons": params['max_numneurons'],
@@ -235,5 +235,5 @@ def run_tests():
 
 
 if __name__ == "__main__":
-    parsed_args = parseArguments()
+    constants = parseArguments()
     run_tests()

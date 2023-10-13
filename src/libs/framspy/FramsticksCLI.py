@@ -305,12 +305,12 @@ if __name__ == "__main__":
 	# - use threads for non-blocking reading from frams' stdout and thus not relying on specific strings printed by frams
 	# - a pool of binaries running simultaneously, balance load - in particular, evaluation
 
-	parsed_args = parseArguments()
-	framsCLI = FramsticksCLI(parsed_args.path, parsed_args.exe, parsed_args.pid)
+	constants = parseArguments()
+	framsCLI = FramsticksCLI(constants.path, constants.exe, constants.pid)
 
 	print("Sending a direct command to Framsticks CLI that calculates \"4\"+2 yields", repr(framsCLI.sendDirectCommand("Simulator.print(\"4\"+2);")))
 
-	simplest = framsCLI.getSimplest('1' if parsed_args.genformat is None else parsed_args.genformat)
+	simplest = framsCLI.getSimplest('1' if constants.genformat is None else constants.genformat)
 	print("\tSimplest genotype:", simplest)
 	parent1 = framsCLI.mutate([simplest])[0]
 	parent2 = parent1

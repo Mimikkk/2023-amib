@@ -1,12 +1,9 @@
 import asyncio
 from dataclasses import dataclass
-import subprocess
-import timeit
 from typing import Literal, Any, Callable
 
 import constants
 import resources
-import serializer
 import utils
 
 @dataclass
@@ -74,12 +71,10 @@ async def run_evolution(
 
 
 @utils.timed
-async def main(
-    name: str,
-):
-  # await asyncio.gather(run_evolution(40, 1, "a"))
-  print(resources.read('a_stats'))
-  print(resources.read('a_genotype'))
+async def main(name: str):
+  await asyncio.gather(run_evolution(40, 1, name))
+  # print(resources.read(f'{name}_stats'))
+  # print(resources.read(f'{name}_genotype'))
 
 if __name__ == '__main__':
   asyncio.run(main("named"))
