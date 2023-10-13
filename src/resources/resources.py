@@ -21,13 +21,13 @@ def read(resource: str, deserializer: Callable[str, T] = Deserialize) -> T:
 
 def pathof(resource: str) -> str:
   if resource.startswith(ResourceDirectory): return resource
-  return f"{ResourceDirectory}/{resource}.serialized"
+  return f"{ResourceDirectory}/{resource}.gen"
 
 def nameof(resource: str) -> str:
-  return Path(resource).name.replace('.serialized', '')
+  return Path(resource).name.replace('.gen', '')
 
 def names() -> list[str]:
-  return [nameof(name) for name in Path(ResourceDirectory).glob("*.serialized")]
+  return [nameof(name) for name in Path(ResourceDirectory).glob("*.gen")]
 
 def contents() -> list[T]:
   return [read(name) for name in names()]

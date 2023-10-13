@@ -245,13 +245,12 @@ def save_genotypes(population):
 def main():
   global constants, OptimizationTargets
   constants = Arguments.parse()
+  OptimizationTargets = constants.opt.split(",")
 
   print(
     "Argument values:",
     ", ".join([f'{argument}={getattr(constants, argument)}' for argument in vars(constants)])
   )
-
-  OptimizationTargets = constants.opt.split(",")
 
   FramsticksLib.DETERMINISTIC = False
   frams_lib = FramsticksLib(constants.path, constants.lib, constants.sim)
@@ -288,9 +287,9 @@ def main():
     sep='\n'
   )
 
-  if constants.hof_savefile is not None:
-    resources.create(f"{constants.hof_savefile}_genotype", '\n'.join(save_genotypes(best_population)))
-    resources.create(f"{constants.hof_savefile}_stats", statistics.compile(population))
+  if not constants.hof_savefile: return
+  resources.create(f"{constants.hof_savefile}_genotype", '\n'.join(save_genotypes(best_population)))
+  resources.create(f"{constants.hof_savefile}_stats", statistics.compile(population))
 
 if __name__ == "__main__":
   main()
