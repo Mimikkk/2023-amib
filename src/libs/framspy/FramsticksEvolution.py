@@ -227,18 +227,16 @@ def prepare_toolbox(frams_lib, tournament_size, genetic_format, initial_genotype
   return toolbox
 
 def save_genotypes(population):
-  from framsfiles import writer as framswriter
-
   # TODO it would be better to save in Individual (after evaluation) all fields returned by Framsticks, and get these fields here, not just the criteria that were actually used as fitness in evolution.
   for individual in population:
     yield (
-      framswriter.from_collection(
-        {
-          "_classname": "org",
-          "genotype": individual[0],
-        } | {
-          criteria: individual.fitness.values[index] for index, criteria in enumerate(OptimizationTargets)
-        }
+      (
+          {
+            "_classname": "org",
+            "genotype": individual[0],
+          } | {
+            criteria: individual.fitness.values[index] for index, criteria in enumerate(OptimizationTargets)
+          }
       )
     )
 
@@ -287,8 +285,9 @@ def main():
     sep='\n'
   )
 
+  from framsfiles import writer as framswriter
   if not constants.hof_savefile: return
-  resources.create(f"{constants.hof_savefile}_genotype", '\n'.join(save_genotypes(best_population)), format='text')
+  resources.create(f"{constants.hof_savefile}_genotype", {"genotypes": list(save_genotypes(best_population))}, format='json')
   resources.create(f"{constants.hof_savefile}_stats", statistics.compile(population), format='json')
 
 if __name__ == "__main__":
