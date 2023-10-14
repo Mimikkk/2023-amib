@@ -1,12 +1,13 @@
 import numpy as np
 
 from commands import Command
+from commands.utils import invoke
 import sims
 
 def main():
   commands: list[Command] = []
 
-  for f9_mut in np.linspace(0, 0.5, 10 + 1):
+  for f9_mut in np.linspace(0, 0.5, 11):
     name = f'f9-mut-{f9_mut:.2f}'
     sims.create(
       name,
@@ -31,9 +32,7 @@ def main():
       )
     )
 
-  processes = [command() for command in commands]
-
-  for process in processes: process.join()
+  invoke(commands)
   print("Processing is done.")
 
 if __name__ == '__main__':

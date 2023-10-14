@@ -288,8 +288,8 @@ def main():
   #   [f'{individual.fitness}\t-->\t{individual[0]}' for individual in best_population],
   #   sep='\n'
   # )
-
   if not constants.hof_savefile: return
+  print(f'Saving best individuals to {constants.hof_savefile}.')
   resources.create(constants.hof_savefile, {
     "genotypes": list(save_genotypes(best_population)),
     "statistics": statistics.compile(best_population),
@@ -297,8 +297,3 @@ def main():
 
 if __name__ == "__main__":
   main()
-
-# 3 graphs.
-## 1. N best individuals. Y axis - fitness, X axis - generation.
-## 2. Aggregated ( avg + std, avg, avg - std ) fitness. Y axis - fitness, X axis - generation.
-## 3. Box plots of individuals' fitness. Y axis - fitness, X axis - generation.
