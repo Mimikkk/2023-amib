@@ -2,34 +2,34 @@
   "genotypes": [
     {
       "_classname": "org",
-      "genotype": "/*9*/BFBLUUU",
-      "vertpos": 0.8128254675368665
+      "genotype": "/*9*/BDLU",
+      "vertpos": 0.23387680949775813
     },
     {
       "_classname": "org",
-      "genotype": "/*9*/BFBRUUU",
-      "vertpos": 0.8120828928703502
+      "genotype": "/*9*/BLU",
+      "vertpos": 0.2183692722588085
     },
     {
       "_classname": "org",
-      "genotype": "/*9*/DDRBUUDDFR",
-      "vertpos": 0.6488733672772939
+      "genotype": "/*9*/BRU",
+      "vertpos": 0.21836040979243057
     },
     {
       "_classname": "org",
-      "genotype": "/*9*/LLRBUUDDDFURRR",
-      "vertpos": 0.6388885719510459
+      "genotype": "/*9*/FLU",
+      "vertpos": 0.21833906940674688
     },
     {
       "_classname": "org",
-      "genotype": "/*9*/BLDRBURLURRDDFULL",
-      "vertpos": 0.6248978957003345
+      "genotype": "/*9*/BRLU",
+      "vertpos": 0.21459452314232472
     }
   ],
   "statistics": {
-    "avg": 0.7075136390671781,
-    "stddev": 0.08602180237698183,
-    "min": 0.6248978957003345,
-    "max": 0.8128254675368665
+    "avg": 0.22070801681961374,
+    "stddev": 0.006743660760475821,
+    "min": 0.21459452314232472,
+    "max": 0.23387680949775813
   }
 }

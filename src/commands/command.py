@@ -1,5 +1,7 @@
-import asyncio
 from dataclasses import dataclass
+import subprocess
+import sys
+import threading
 from typing import Literal, Any, Callable
 
 from constants import constants
@@ -10,7 +12,7 @@ OptimizationTarget = Literal[
 GeneticFormat = Literal['4', '9', 'B', 'f1']
 
 @dataclass
-class command(object):
+class Command(object):
   population: int | None = None
   generations: int | None = None
   sims: list[str] | None = None
@@ -41,7 +43,7 @@ class command(object):
       [constants.Python, constants.Runfile],
       ("path", constants.Library),
       ("opt", self.optimization_targets, ",".join),
-      ("sim", self.sims, lambda sims: ';'.join([sim if sim.endswith('.sim') else f"{sim}.sim" for sim in sims])),
+      ("sim", self.sims, handle_sims),
       ("genformat", self.genetic_format),
       ("initialgenotype", self.initial_genotype),
       ("popsize", self.population),
@@ -58,17 +60,19 @@ class command(object):
       ("max_numgenochars", self.max_genotype_length),
     ))
 
-  async def __call__(self):
-    process = await asyncio.create_subprocess_exec(
-      *self,
-      stdout=asyncio.subprocess.PIPE,
-      stdin=asyncio.subprocess.PIPE,
-    )
+  def __str__(self):
+    return " ".join(self)
 
-    if self.verbose: print(f"Verbose: Command '{self.name}' Started...")
+  def run(self):
+    print(f'{self.name}: "{self}" Started.')
+    subprocess.call(str(self), stdout=sys.stdout, stderr=subprocess.PIPE)
+    print(f'{self.name} finished.')
 
-    result = await process.communicate()
+  def __call__(self):
+    process = threading.Thread(target=self.run)
+    process.start()
+    return process
 
-    if self.verbose: print(f"Verbose: Command '{self.name}' Finished.")
-
-    return result
+def handle_sims(sims: list[str]) -> str:
+  joined = ';'.join(sim if sim.endswith('.sim') else f"{sim}.sim" for sim in sims)
+  return f'"{joined}"'
