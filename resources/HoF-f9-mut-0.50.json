@@ -1,5 +1,11 @@
 {
-  "genotypes": [
+  "name": "HoF-f9-mut-0.50",
+  "population": [
+    {
+      "_classname": "org",
+      "genotype": "/*9*/RBDF",
+      "vertpos": 0.2353283198439382
+    },
     {
       "_classname": "org",
       "genotype": "/*9*/BLU",
@@ -7,29 +13,24 @@
     },
     {
       "_classname": "org",
-      "genotype": "/*9*/UFD",
-      "vertpos": -0.008842192285917656
+      "genotype": "/*9*/LBU",
+      "vertpos": 0.21836826181696437
     },
     {
       "_classname": "org",
-      "genotype": "/*9*/L",
-      "vertpos": -0.009999999999999724
+      "genotype": "/*9*/RBU",
+      "vertpos": 0.21835866265018514
     },
     {
       "_classname": "org",
-      "genotype": "/*9*/LU",
-      "vertpos": -0.013333201630077883
-    },
-    {
-      "_classname": "org",
-      "genotype": "/*9*/RLU",
-      "vertpos": -0.013333323239137121
+      "genotype": "/*9*/FRU",
+      "vertpos": 0.2183301927894156
     }
   ],
   "statistics": {
-    "avg": 0.03457211102073522,
-    "stddev": 0.09191596259999694,
-    "min": -0.013333323239137121,
-    "max": 0.2183692722588085
+    "avg": 0.22175094187186234,
+    "stddev": 0.00678870368958832,
+    "min": 0.2183301927894156,
+    "max": 0.2353283198439382
   }
 }

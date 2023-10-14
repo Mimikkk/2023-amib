@@ -1,13 +1,11 @@
 import argparse
-import dataclasses
+from dataclasses import dataclass
 import os
 import sys
-from typing import Literal
-
-import matplotlib
 import numpy as np
 from deap import creator, base, tools, algorithms
 from FramsticksLib import FramsticksLib
+from commands.command import OptimizationTarget
 from resources import resources
 
 
@@ -15,10 +13,7 @@ def ensure_dir(string: str):
   if not os.path.isdir(string): raise NotADirectoryError(string)
   return string
 
-OptimizationTarget = Literal[
-  'vertpos', 'velocity', 'distance', 'vertvel', 'lifespan', 'numjoints', 'numparts', 'numneurons', 'numconnections'
-]
-@dataclasses.dataclass
+@dataclass
 class Arguments(object):
   max_numparts: int
   max_numconnections: int
@@ -151,7 +146,6 @@ class Arguments(object):
       help="Maximum number of characters in genotype (including the format prefix, if any). Default: no limit"
     ).done()
 
-# globals
 OptimizationTargets: list[OptimizationTarget]
 constants: Arguments
 
@@ -190,7 +184,6 @@ def frams_evaluate(frams_lib, individual):
     return unfit
 
   return fitness
-
 def frams_crossover(frams_lib, individual1, individual2):
   # individual[0] because we can't (?) have a simple str as a deap genotype/individual, only list of str.
   geno1 = individual1[0]
@@ -199,15 +192,12 @@ def frams_crossover(frams_lib, individual1, individual2):
   individual1[0] = frams_lib.crossOver(geno1, geno2)
   individual2[0] = frams_lib.crossOver(geno1, geno2)
   return individual1, individual2
-
 def frams_mutate(frams_lib, individual):
   individual[0] = frams_lib.mutate([individual[0]])[
     0]  # individual[0] because we can't (?) have a simple str as a deap genotype/individual, only list of str.
   return individual,
-
 def frams_getsimplest(frams_lib, genetic_format, initial_genotype):
   return initial_genotype if initial_genotype is not None else frams_lib.getSimplest(genetic_format)
-
 def prepare_toolbox(frams_lib, tournament_size, genetic_format, initial_genotype):
   creator.create("FitnessMax", base.Fitness, weights=[1.0] * len(OptimizationTargets))
   creator.create("Individual", list, fitness=creator.FitnessMax)
@@ -227,22 +217,20 @@ def prepare_toolbox(frams_lib, tournament_size, genetic_format, initial_genotype
 
   return toolbox
 
-def save_genotypes(population):
-  # TODO it would be better to save in Individual (after evaluation) all fields returned by Framsticks, and get these fields here, not just the criteria that were actually used as fitness in evolution.
-  for individual in population:
-    yield (
-      (
-          {
-            "_classname": "org",
-            "genotype": individual[0],
-            # "history": [{
-            #   criteria: individual.fitness.values[index] for index, criteria in enumerate(OptimizationTargets)
-            # } | stats.compile()], # I tak wiele wiele razy.
-          } | {
-            criteria: individual.fitness.values[index] for index, criteria in enumerate(OptimizationTargets)
-          }
-      )
-    )
+def save_scores(individual): return {
+  criteria: individual.fitness.values[index] for (index, criteria) in enumerate(OptimizationTargets)
+}
+def save_population_scores(population): return [
+  save_scores(individual) for individual in population
+]
+def save_population(population): return [
+  {
+    "_classname": "org",
+    "genotype": individual[0],
+    "values": save_scores(individual)
+  }
+  for individual in population
+]
 
 def main():
   global constants, OptimizationTargets
@@ -272,8 +260,9 @@ def main():
   statistics.register("stddev", np.std)
   statistics.register("min", np.min)
   statistics.register("max", np.max)
+  statistics.register("values", lambda _: save_population_scores(best_population))
 
-  algorithms.eaSimple(
+  _, logbook = algorithms.eaSimple(
     population,
     toolbox,
     cxpb=constants.pxov,
@@ -291,8 +280,9 @@ def main():
   if not constants.hof_savefile: return
   print(f'Saving best individuals to {constants.hof_savefile}.')
   resources.create(constants.hof_savefile, {
-    "genotypes": list(save_genotypes(best_population)),
-    "statistics": statistics.compile(best_population),
+    "name": constants.hof_savefile,
+    "population": save_population(best_population),
+    "history": list(logbook),
   }, format='json')
 
 if __name__ == "__main__":

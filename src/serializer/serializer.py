@@ -12,7 +12,7 @@ def pickle_deserialize(content: bytes) -> T:
 def json_serialize(content: T) -> str:
   return json.dumps(content, indent=2)
 
-def json_deserialize(content: str) -> T:
+def json_deserialize(content: str) -> dict:
   return json.loads(content)
 
 def text_serialize(content: str) -> str:

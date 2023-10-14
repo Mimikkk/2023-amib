@@ -3,6 +3,8 @@ from os.path import isdir, dirname
 from pathlib import Path
 from typing import TypeVar, Literal
 
+from dacite import from_dict
+
 from constants import ResourceDirectory
 from serializer import json_serialize, json_deserialize, text_serialize, text_deserialize
 
@@ -24,6 +26,7 @@ def read(
     *,
     mode: Literal['r', 'rb'] = 'r',
     format: Format = 'json',
+    model: type[T] = None
 ) -> T:
   resource = pathof(resource, format)
 
@@ -31,7 +34,11 @@ def read(
   elif format == 'text' or format == 'gen': deserializer = text_deserialize
   else: raise ValueError(f"Unknown extension: {format}")
 
-  with open(resource, mode) as file: return deserializer(file.read())
+  with open(resource, mode) as file:
+    item = file.read()
+  item = deserializer(item)
+  if model is not None: item = from_dict(model, item)
+  return item
 
 def pathof(resource: str, format: Format) -> str:
   if resource.startswith(ResourceDirectory): return resource
@@ -41,7 +48,7 @@ def nameof(resource: str) -> str:
   return Path(resource).name.replace('.json', '').replace('.gen', '').replace('.text', '')
 
 def names() -> list[str]:
-  return [nameof(name) for name in Path(ResourceDirectory).glob("*.json|*.gen|*.text")]
+  return [nameof(name) for name in Path(ResourceDirectory).glob("*.json")]
 
 def contents() -> list[T]:
   return [read(name) for name in names()]

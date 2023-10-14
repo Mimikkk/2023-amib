@@ -69,5 +69,5 @@ class Command(object):
 
   def run(self):
     print(f'{self.name}: "{self}" Started...')
-    subprocess.call(str(self), stdout=subprocess.PIPE, stderr=sys.stderr)
+    subprocess.call(str(self), stdout=sys.stdout, stderr=sys.stderr)
     print(f'{self.name} finished.')
