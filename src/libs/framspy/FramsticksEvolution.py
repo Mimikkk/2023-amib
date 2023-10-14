@@ -8,7 +8,7 @@ import matplotlib
 import numpy as np
 from deap import creator, base, tools, algorithms
 from FramsticksLib import FramsticksLib
-# import resources
+from resources import resources
 
 
 def ensure_dir(string: str):
@@ -244,37 +244,6 @@ def save_genotypes(population):
       )
     )
 
-def box_plots(statistics, hof, savefile):
-  import matplotlib.pyplot as plt
-
-  print('aa')
-  import matplotlib.pyplot as plt
-
-  # Data
-  data = [
-    {"avg": 0.2341493666274886},
-    {"avg": 0.1},
-    {"avg": 0.2},
-    {"avg": 0.23},
-    {"avg": 0.4},
-  ]
-
-  # Extract 'avg' values and their indices
-  avg_values = [item["avg"] for item in data]
-  indices = list(range(1, len(data) + 1))  # Generate indices for x-axis
-
-  # Create a line plot
-  plt.plot(indices, avg_values, marker='o', linestyle='-')
-
-  # Add labels and title
-  plt.title('Line Plot of "avg" Values')
-  plt.xlabel('Data Point Index')
-  plt.ylabel('Value')
-
-  # Show the plot
-  plt.grid(True)  # Add grid lines
-  plt.show()
-
 def main():
   global constants, OptimizationTargets
   constants = Arguments.parse()
@@ -320,12 +289,11 @@ def main():
   #   sep='\n'
   # )
 
-  box_plots(statistics, best_population, constants.hof_savefile)
   if not constants.hof_savefile: return
-  # resources.create(constants.hof_savefile, {
-  #   "genotypes": list(save_genotypes(best_population)),
-  #   "statistics": statistics.compile(best_population),
-  # }, format='json')
+  resources.create(constants.hof_savefile, {
+    "genotypes": list(save_genotypes(best_population)),
+    "statistics": statistics.compile(best_population),
+  }, format='json')
 
 if __name__ == "__main__":
   main()
