@@ -1,1 +1,1 @@
-from .savefile import Statistic, Individual, HistoryRecord, SaveFile
+from .savefile import Statistic, Individual, HistoryRecord, SaveRecord

@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Any
 
 from commands.command import OptimizationTarget
 
@@ -25,8 +26,21 @@ class HistoryRecord(object):
   max: float
   values: list[dict[OptimizationTarget, float]]
 
+  def select(self, target: str | OptimizationTarget) -> float:
+    if target in self.values: return self.values[target]
+    return self.__dict__[target]
+
 @dataclass
-class SaveFile(object):
+class SaveMeta(object):
+  command: str
+  arguments: dict
+
+@dataclass
+class SaveRecord(object):
   name: str
+  meta: SaveMeta
   population: list[Individual]
   history: list[HistoryRecord]
+
+  def select(self, target: OptimizationTarget) -> list[float]:
+    return [record.select(target) for record in self.history]

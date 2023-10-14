@@ -237,11 +237,6 @@ def main():
   constants = Arguments.parse()
   OptimizationTargets = constants.opt.split(",")
 
-  # print(
-  #   "Argument values:",
-  #   ", ".join([f'{argument}={getattr(constants, argument)}' for argument in vars(constants)])
-  # )
-
   FramsticksLib.DETERMINISTIC = False
   frams_lib = FramsticksLib(constants.path, constants.lib, constants.sim)
 
@@ -272,17 +267,15 @@ def main():
     halloffame=best_population,
   )
 
-  # print(
-  #   'Best individuals:',
-  #   [f'{individual.fitness}\t-->\t{individual[0]}' for individual in best_population],
-  #   sep='\n'
-  # )
   if not constants.hof_savefile: return
-  print(f'Saving best individuals to {constants.hof_savefile}.')
   resources.create(constants.hof_savefile, {
+    "meta": {
+      "command": " ".join(sys.argv),
+      "arguments": vars(constants),
+    },
     "name": constants.hof_savefile,
     "population": save_population(best_population),
-    "history": list(logbook),
+    "history": list(logbook)[1:],
   }, format='json')
 
 if __name__ == "__main__":

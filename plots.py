@@ -1,28 +1,92 @@
-# 3 graphs.
-## 1. N best individuals. Y axis - fitness, X axis - generation.
-## 2. Aggregated ( avg + std, avg, avg - std ) fitness. Y axis - fitness, X axis - generation.
-## 3. Box plots of individuals' fitness. Y axis - fitness, X axis - generation.
+from matplotlib import pyplot as plt, colors
+from matplotlib.cm import get_cmap
+from matplotlib.pyplot import colormaps
+import numpy as np
 
 import resources
-from resources.models import SaveFile
+from resources.models import SaveRecord
 
-def boxplot(data: list[SaveFile]):
-  genotype_values = []
-  for entry in data:
-    genotype_values.append([genotype["vertpos"] for genotype in entry["genotypes"]])
-  genotype_names = [entry["individual"] for entry in data]
+def boxplot(records: list[SaveRecord]):
+  plt.tight_layout()
+  plt.figure(figsize=(12, 5))
 
-  # Create a box plot
-  plt.boxplot(genotype_values, labels=genotype_names, vert=True)
-  plt.xlabel("Vertpos Values")
-  plt.title("Box Plot of Vertpos Values")
+  names = [entry.name for entry in records]
+  scores = [
+    [individual.values["vertpos"] for individual in entry.population]
+    for entry in records
+  ]
+
+  plt.boxplot(scores, labels=names)
+  plt.xticks(rotation=15)
+  plt.xlabel("Fitness")
+  plt.ylabel("Representation")
+  plt.legend(
+    loc='center left',
+    bbox_to_anchor=(0.96, 0.5),
+  )
   plt.show()
 
-if __name__ == '__main__':
-  import matplotlib.pyplot as plt
-  data = resources.read("HoF-f9-mut-0.00", format="json", model=SaveFile)
-  print(data)
-  # print(data.name)
+def plot(records: list[SaveRecord]):
+  plt.tight_layout()
+  plt.figure(figsize=(12, 5))
 
-  # genotypes = [data]
-  # boxplot(genotypes)
+  generations = len(records[0].history)
+  ticks = range(1, generations + 1)
+
+  cmap = colormaps['tab20c']
+  for (index, record) in enumerate(records):
+    individuals_scores = list(zip(*[
+      [values["vertpos"] for values in generation.values]
+      for generation in record.history
+    ]))
+
+    for (i, individual_scores) in enumerate(individuals_scores):
+      if i == 0:
+        plt.plot(ticks, individual_scores, label=record.name, color=cmap(index))
+      else:
+        plt.plot(ticks, individual_scores, color=cmap(index))
+
+  plt.xlabel("Generation")
+  plt.ylabel("Fitness")
+  plt.legend(
+    loc='center left',
+    bbox_to_anchor=(0.96, 0.5),
+  )
+  plt.show()
+
+def aggregated(records: list[SaveRecord]):
+  plt.tight_layout()
+  plt.figure(figsize=(12, 5))
+
+  generations = len(records[0].history)
+  ticks = range(1, generations + 1)
+
+  for record in records:
+    averages = np.array(record.select('avg'))
+    stddevs = np.array(record.select('stddev'))
+
+    plt.plot(ticks, averages, label=record.name)
+    plt.fill_between(
+      ticks,
+      averages - stddevs,
+      averages + stddevs,
+      alpha=0.3
+    )
+
+  plt.ylabel('Fitness')
+  plt.legend(
+    loc='center left',
+    bbox_to_anchor=(0.96, 0.5),
+  )
+  plt.show()
+
+
+def main():
+  records = [resources.read(name, model=SaveRecord) for name in resources.names()]
+
+  boxplot(records)
+  plot(records)
+  aggregated(records)
+
+if __name__ == '__main__':
+  main()
