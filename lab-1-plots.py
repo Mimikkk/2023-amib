@@ -20,7 +20,7 @@ def boxplot(records: list[SaveRecord]):
   plt.xticks(rotation=15)
   plt.xlabel("Fitness")
   plt.ylabel("Representation")
-  plt.savefig('boxplot.png', bbox_inches='tight')
+  plt.savefig('resources/lab-1/figures/boxplot.png', bbox_inches='tight')
 
 def plot(records: list[SaveRecord]):
   plt.tight_layout()
@@ -48,7 +48,7 @@ def plot(records: list[SaveRecord]):
     loc='center left',
     bbox_to_anchor=(0.96, 0.5),
   )
-  plt.savefig('plot.png', bbox_inches='tight')
+  plt.savefig('resources/lab-1/figures/plot.png', bbox_inches='tight')
 
 def aggregated(records: list[SaveRecord]):
   plt.tight_layout()
@@ -74,7 +74,7 @@ def aggregated(records: list[SaveRecord]):
     loc='center left',
     bbox_to_anchor=(0.96, 0.5),
   )
-  plt.savefig('aggregated.png', bbox_inches='tight')
+  plt.savefig('resources/lab-1/figures/aggregated.png', bbox_inches='tight')
 
 
 def main():
