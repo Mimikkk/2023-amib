@@ -9,7 +9,7 @@ from constants import constants
 OptimizationTarget = Literal[
   'vertpos', 'velocity', 'distance', 'vertvel', 'lifespan', 'numjoints', 'numparts', 'numneurons', 'numconnections'
 ]
-GeneticFormat = Literal['4', '9', 'B', 'f1']
+GeneticFormat = Literal['0', '4', '9', 'B', 'f1']
 
 def handle_sims(sims: list[str]) -> str:
   joined = ';'.join(sim if sim.endswith('.sim') else f"{sim}.sim" for sim in sims)
