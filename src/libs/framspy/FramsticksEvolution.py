@@ -76,6 +76,8 @@ class Arguments(object):
     ).add(
       '-genformat',
       required=False,
+      type=str,
+      default='1',
       help='Genetic format for the simplest initial genotype, for example 4, 9, or B. If not given, f1 is assumed.'
     ).add(
       '-initialgenotype',
@@ -170,7 +172,13 @@ def frams_evaluate(lib, individual):
   valid = True
   try:
     evaluation = lib.evaluate([genotype])[0]['evaluations'][""]
-    fitness = [(1 + evaluation[target]) ** 2 for target in OptimizationTargets]
+    # fitness = [evaluation[target] + (evaluation['numparts'] / constants.max_numparts / 5) for target in OptimizationTargets]
+    fitness = [
+      evaluation[target]
+      if evaluation[target] > 0 else
+      evaluation[target] + (evaluation['numparts'] / constants.max_numparts / 5)
+      for target in OptimizationTargets
+    ]
 
     evaluation['numgenocharacters'] = len(genotype)
     valid &= within_constraint(genotype, evaluation, 'numparts', constants.max_numparts)
@@ -222,7 +230,7 @@ def prepare_toolbox(lib, tournament_size, genetic_format, initial_genotype):
   return toolbox
 
 def save_scores(individual): return {
-  criteria: individual.fitness.values[index] ** 0.5 - 1 for (index, criteria) in enumerate(OptimizationTargets)
+  criteria: individual.fitness.values[index] for (index, criteria) in enumerate(OptimizationTargets)
 }
 def save_population_scores(population): return [
   save_scores(individual) for individual in population
@@ -239,7 +247,7 @@ def save_population(population): return [
 def main():
   global constants, OptimizationTargets
   constants = Arguments.parse()
-  OptimizationTargets = constants.opt.split(",")
+  OptimizationTargets = ['vertpos']
 
   FramsticksLib.DETERMINISTIC = False
   frams_lib = FramsticksLib(constants.path, constants.lib, constants.sim)
@@ -247,7 +255,7 @@ def main():
   toolbox = prepare_toolbox(
     frams_lib,
     constants.tournament,
-    '1' if constants.genformat is None else constants.genformat,
+    constants.genformat,
     constants.initialgenotype
   )
 

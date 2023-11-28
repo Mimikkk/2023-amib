@@ -78,7 +78,7 @@ def aggregated(records: list[SaveRecord]):
 
 
 def main():
-  records = [resources.read(name, model=SaveRecord) for name in resources.names() if name.startswith('f9-mut-')]
+  records = [resources.read(name, model=SaveRecord) for name in resources.names('lab-1')]
 
   ensure_directory('resources/lab-1/figures')
   boxplot(records)

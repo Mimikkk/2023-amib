@@ -1,3 +1,4 @@
+import glob
 from os import makedirs
 from os.path import isdir, dirname
 from pathlib import Path
@@ -45,10 +46,12 @@ def pathof(resource: str, format: Format) -> str:
   return f"{ResourceDirectory}/{resource}.{format}"
 
 def nameof(resource: str) -> str:
-  return Path(resource).name.replace('.json', '').replace('.gen', '').replace('.text', '')
+  return str(Path(resource).relative_to(ResourceDirectory)).replace('.json', '').replace('.gen', '').replace('.text', '')
 
-def names() -> list[str]:
-  return [nameof(name) for name in Path(ResourceDirectory).glob("*.json")]
+def names(path: str = "") -> list[str]:
+  directory = ResourceDirectory
+  if path: directory = f"{directory}/{path}"
+  return list(map(nameof, glob.glob(f"{directory}/**/*.json", recursive=True)))
 
 def contents() -> list[T]:
   return [read(name) for name in names()]
