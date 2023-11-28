@@ -2,8 +2,10 @@ import argparse
 from dataclasses import dataclass
 import os
 import sys
-import numpy as np
+
 from deap import creator, base, tools, algorithms
+import numpy as np
+
 from FramsticksLib import FramsticksLib
 from commands.command import OptimizationTarget
 from resources import resources
@@ -149,24 +151,26 @@ class Arguments(object):
 OptimizationTargets: list[OptimizationTarget]
 constants: Arguments
 
-def within_constraint(genotype, dict_criteria_values, criterion_name, constraint_value):
+def within_constraint(genotype, values, criterion, max_value):
   REPORT_CONSTRAINT_VIOLATIONS = False
-  if constraint_value is not None:
-    actual_value = dict_criteria_values[criterion_name]
-    if actual_value > constraint_value:
-      if REPORT_CONSTRAINT_VIOLATIONS:
-        print('Genotype "%s" assigned low fitness because it violates constraint "%s": %s exceeds threshold %s' % (
-          genotype, criterion_name, actual_value, constraint_value))
-      return False
+  if max_value is None: return True
+  actual_value = values[criterion]
+
+  if actual_value > max_value:
+    if REPORT_CONSTRAINT_VIOLATIONS:
+      print(
+        f'Genotype "{genotype}" assigned low fitness because it violates constraint "{criterion}": {actual_value} exceeds threshold {max_value}'
+      )
+    return False
   return True
-def frams_evaluate(frams_lib, individual):
+def frams_evaluate(lib, individual):
   unfit = [-1] * len(OptimizationTargets)
   genotype = individual[0]
 
   valid = True
   try:
-    evaluation = frams_lib.evaluate([genotype])[0]['evaluations'][""]
-    fitness = [evaluation[target] for target in OptimizationTargets]
+    evaluation = lib.evaluate([genotype])[0]['evaluations'][""]
+    fitness = [(1 + evaluation[target]) ** 2 for target in OptimizationTargets]
 
     evaluation['numgenocharacters'] = len(genotype)
     valid &= within_constraint(genotype, evaluation, 'numparts', constants.max_numparts)
@@ -184,31 +188,31 @@ def frams_evaluate(frams_lib, individual):
     return unfit
 
   return fitness
-def frams_crossover(frams_lib, individual1, individual2):
+def frams_crossover(lib, first, second):
   # individual[0] because we can't (?) have a simple str as a deap genotype/individual, only list of str.
-  geno1 = individual1[0]
+  geno1 = first[0]
   # individual[0] because we can't (?) have a simple str as a deap genotype/individual, only list of str.
-  geno2 = individual2[0]
-  individual1[0] = frams_lib.crossOver(geno1, geno2)
-  individual2[0] = frams_lib.crossOver(geno1, geno2)
-  return individual1, individual2
-def frams_mutate(frams_lib, individual):
-  individual[0] = frams_lib.mutate([individual[0]])[
-    0]  # individual[0] because we can't (?) have a simple str as a deap genotype/individual, only list of str.
+  geno2 = second[0]
+  first[0] = lib.crossOver(geno1, geno2)
+  second[0] = lib.crossOver(geno1, geno2)
+  return first, second
+def frams_mutate(lib, individual):
+  # individual[0] because we can't (?) have a simple str as a deap genotype/individual, only list of str.
+  individual[0] = lib.mutate([individual[0]])[0]
   return individual,
-def frams_getsimplest(frams_lib, genetic_format, initial_genotype):
-  return initial_genotype if initial_genotype is not None else frams_lib.getSimplest(genetic_format)
-def prepare_toolbox(frams_lib, tournament_size, genetic_format, initial_genotype):
+def frams_getsimplest(lib, genetic_format, initial_genotype):
+  return initial_genotype if initial_genotype else lib.getSimplest(genetic_format)
+def prepare_toolbox(lib, tournament_size, genetic_format, initial_genotype):
   creator.create("FitnessMax", base.Fitness, weights=[1.0] * len(OptimizationTargets))
   creator.create("Individual", list, fitness=creator.FitnessMax)
 
   toolbox = base.Toolbox()
-  toolbox.register("attr_simplest_genotype", frams_getsimplest, frams_lib, genetic_format, initial_genotype)
+  toolbox.register("attr_simplest_genotype", frams_getsimplest, lib, genetic_format, initial_genotype)
   toolbox.register("individual", tools.initRepeat, creator.Individual, toolbox.attr_simplest_genotype, 1)
   toolbox.register("population", tools.initRepeat, list, toolbox.individual)
-  toolbox.register("evaluate", frams_evaluate, frams_lib)
-  toolbox.register("mate", frams_crossover, frams_lib)
-  toolbox.register("mutate", frams_mutate, frams_lib)
+  toolbox.register("evaluate", frams_evaluate, lib)
+  toolbox.register("mate", frams_crossover, lib)
+  toolbox.register("mutate", frams_mutate, lib)
 
   if len(OptimizationTargets) <= 1:
     toolbox.register("select", tools.selTournament, tournsize=tournament_size)
@@ -218,7 +222,7 @@ def prepare_toolbox(frams_lib, tournament_size, genetic_format, initial_genotype
   return toolbox
 
 def save_scores(individual): return {
-  criteria: individual.fitness.values[index] for (index, criteria) in enumerate(OptimizationTargets)
+  criteria: individual.fitness.values[index] ** 0.5 - 1 for (index, criteria) in enumerate(OptimizationTargets)
 }
 def save_population_scores(population): return [
   save_scores(individual) for individual in population

@@ -6,6 +6,8 @@ from figures import ensure_directory
 import resources
 from resources.models import SaveRecord
 
+prefix = '2'
+
 def boxplot(records: list[SaveRecord]):
   plt.tight_layout()
   plt.figure(figsize=(12, 5))
@@ -18,9 +20,9 @@ def boxplot(records: list[SaveRecord]):
 
   plt.boxplot(scores, labels=names)
   plt.xticks(rotation=15)
-  plt.xlabel("Fitness")
-  plt.ylabel("Representation")
-  plt.savefig('resources/lab-1/figures/boxplot.png', bbox_inches='tight')
+  plt.xlabel("Representation")
+  plt.ylabel("Fitness")
+  plt.savefig(f'resources/lab-2/{prefix}/figures/boxplot.png', bbox_inches='tight')
 
 def plot(records: list[SaveRecord]):
   plt.tight_layout()
@@ -48,7 +50,7 @@ def plot(records: list[SaveRecord]):
     loc='center left',
     bbox_to_anchor=(0.96, 0.5),
   )
-  plt.savefig('resources/lab-1/figures/plot.png', bbox_inches='tight')
+  plt.savefig(f'resources/lab-2/{prefix}/figures/plot.png', bbox_inches='tight')
 
 def aggregated(records: list[SaveRecord]):
   plt.tight_layout()
@@ -74,13 +76,13 @@ def aggregated(records: list[SaveRecord]):
     loc='center left',
     bbox_to_anchor=(0.96, 0.5),
   )
-  plt.savefig('resources/lab-1/figures/aggregated.png', bbox_inches='tight')
+  plt.savefig(f'resources/lab-2/{prefix}/figures/aggregated.png', bbox_inches='tight')
 
 
 def main():
-  records = [resources.read(name, model=SaveRecord) for name in resources.names() if name.startswith('f9-mut-')]
+  records = [resources.read(name, model=SaveRecord) for name in resources.names() if name.startswith(f'HoF-{prefix}-f')]
 
-  ensure_directory('resources/lab-1/figures')
+  ensure_directory(f'resources/lab-2/{prefix}/figures')
   boxplot(records)
   plot(records)
   aggregated(records)

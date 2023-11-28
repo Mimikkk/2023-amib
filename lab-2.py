@@ -1,34 +1,24 @@
-import numpy as np
-
 from commands import Command
 from commands.utils import invoke
-import sims
+
+prefix = '2'
 
 def main():
   commands: list[Command] = []
 
-  for f9_mut in np.linspace(0, 0.5, 11):
-    name = f'f9-mut-{f9_mut:.2f}'
-    sims.create(
-      name,
-      rf"""
-      sim_params:
-      f9_mut:{f9_mut:.2f}                  
-      """
-    )
+  for genetic_format in ("0", "1", "4", "9"):
+    name = f'HoF-{prefix}-f{genetic_format}'
 
     commands.append(
       Command(
         name=name,
+        sims=[f'eval-allcriteria', "deterministic", 'sample-period-2', 'only-body'],
         optimization_targets=["vertpos"],
         population=100,
-        generations=50,
-        sims=[f'eval-allcriteria', "deterministic", 'sample-period-2', name],
-        initial_genotype='/*9*/BLU',
         max_part_count=30,
-        max_genotype_length=50,
+        genetic_format=genetic_format,
+        generations=50,
         hall_of_fame_size=5,
-        verbose=True
       )
     )
 
