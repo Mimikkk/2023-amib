@@ -1,6 +1,7 @@
 from os import makedirs
 from os.path import isdir, dirname
 from pathlib import Path
+
 from constants import SimDirectory
 
 def trim_common_space_count(content: str) -> str:
@@ -28,6 +29,18 @@ def create(sim: str, content: str):
   sim = pathof(sim)
 
   content = prepare(content)
+  if not isdir(directory := dirname(sim)): makedirs(directory)
+  with open(sim, 'w') as file: file.write(content)
+
+def params(sim: str, content: dict[str, any]):
+  sim = pathof(sim)
+
+  str = 'sim_params:'
+  for (key, value) in content.items():
+    if isinstance(value, float): value = f'{value:.2f}'
+    str += f'\n{key}:{value}'
+  content = str
+
   if not isdir(directory := dirname(sim)): makedirs(directory)
   with open(sim, 'w') as file: file.write(content)
 

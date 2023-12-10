@@ -33,6 +33,8 @@ class Command(object):
   max_genotype_length: int | None = None
   optimization_targets: list[OptimizationTarget] | None = None
   verbose: bool = False
+  parameter_scheduler_parameters: list[str] | dict[str, Any] | None = None
+  parameter_scheduler_factor: float | None = None
 
   def __iter__(self):
     def with_optional_flags(initial: list[str], *flags: tuple[str, Any, Callable[Any, str]]):
@@ -61,6 +63,8 @@ class Command(object):
       ("max_numneurons", self.max_neuron_count),
       ("max_numconnections", self.max_connection_count),
       ("max_numgenochars", self.max_genotype_length),
+      ("parameter_scheduler_parameters", self.parameter_scheduler_parameters, ','.join),
+      ("parameter_scheduler_factor", self.parameter_scheduler_factor),
     ))
 
   def __str__(self):

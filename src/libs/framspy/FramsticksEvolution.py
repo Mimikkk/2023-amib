@@ -2,12 +2,14 @@ import argparse
 from dataclasses import dataclass
 import os
 import sys
+from typing import Generator
 
 from deap import creator, base, tools, algorithms
 import numpy as np
 
 from FramsticksLib import FramsticksLib
 from commands.command import OptimizationTarget
+import frams
 from resources import resources
 
 
@@ -27,7 +29,7 @@ class Arguments(object):
   sim: str
   genformat: str
   initialgenotype: str
-  opt: str
+  opt: list[str]
   popsize: int
   generations: int
   tournament: int
@@ -35,9 +37,12 @@ class Arguments(object):
   pxov: float
   hof_size: int
   hof_savefile: str
+  parameter_scheduler_parameters: dict
+  parameter_scheduler_factor: dict
+
 
   @staticmethod
-  def parse():
+  def parse() -> 'Arguments':
     class parser:
       def __init__(self, *args, **kwargs):
         self.item = argparse.ArgumentParser(*args, **kwargs)
@@ -59,6 +64,7 @@ class Arguments(object):
     ).add(
       '-opt',
       required=True,
+      type=lambda string: string.split(','),
       help='optimization criteria: vertpos, velocity, distance, vertvel, lifespan, numjoints, numparts, numneurons, '
            'numconnections (or other as long as it is provided by the .sim file and its .expdef). For multiple criteria '
            'optimization, separate the names by the comma.'
@@ -148,10 +154,35 @@ class Arguments(object):
       required=False,
       type=int,
       help="Maximum number of characters in genotype (including the format prefix, if any). Default: no limit"
+    ).add(
+      '-parameter_scheduler_factor',
+      required=False,
+      default=1.0,
+      type=float,
+      help="Factor by which the parameters are multiplied after each generation. Default: 1.0"
+    ).add(
+      '-parameter_scheduler_parameters',
+      required=False,
+      default="",
+      type=lambda arg: {key: 'noop' for key in arg.split(",")} if arg else {},
+      help="Parameters to be used by the scheduler. Expected format: parameter=initial_value;parameter< =initial_value >."
+           "Default: no parameters"
     ).done()
 
 OptimizationTargets: list[OptimizationTarget]
 constants: Arguments
+ParameterScheduler: Generator[dict[str, float], None, None]
+
+def monkey_patch_genman():
+  frams.GenMan.__dict__['get'] = lambda key: frams.GenMan.__getattr__(key)._value()
+  frams.GenMan.__dict__['set'] = frams.GenMan.__setattr__
+
+def create_parameters_scheduler(params: dict[str, float], factor: float):
+  while True:
+    for (key, value) in params.items():
+      params[key] *= factor
+
+    yield params
 
 def within_constraint(genotype, values, criterion, max_value):
   REPORT_CONSTRAINT_VIOLATIONS = False
@@ -172,13 +203,14 @@ def frams_evaluate(lib, individual):
   valid = True
   try:
     evaluation = lib.evaluate([genotype])[0]['evaluations'][""]
-    # fitness = [evaluation[target] + (evaluation['numparts'] / constants.max_numparts / 5) for target in OptimizationTargets]
-    fitness = [
-      evaluation[target]
-      if evaluation[target] > 0 else
-      evaluation[target] + (evaluation['numparts'] / constants.max_numparts / 5)
-      for target in OptimizationTargets
-    ]
+    fitness = [evaluation[target] for target in OptimizationTargets]
+
+    # fitness = [
+    #   evaluation[target]
+    #   if evaluation[target] > 0 else
+    #   evaluation[target] + (evaluation['numparts'] / constants.max_numparts / 5)
+    #   for target in OptimizationTargets
+    # ]
 
     evaluation['numgenocharacters'] = len(genotype)
     valid &= within_constraint(genotype, evaluation, 'numparts', constants.max_numparts)
@@ -196,6 +228,13 @@ def frams_evaluate(lib, individual):
     return unfit
 
   return fitness
+
+def frams_update_sim_params():
+  params = next(ParameterScheduler)
+
+  for (key, value) in params.items():
+    frams.GenMan[key] = value
+
 def frams_crossover(lib, first, second):
   # individual[0] because we can't (?) have a simple str as a deap genotype/individual, only list of str.
   geno1 = first[0]
@@ -215,6 +254,7 @@ def prepare_toolbox(lib, tournament_size, genetic_format, initial_genotype):
   creator.create("Individual", list, fitness=creator.FitnessMax)
 
   toolbox = base.Toolbox()
+  toolbox.register("update_sim_params", frams_update_sim_params)
   toolbox.register("attr_simplest_genotype", frams_getsimplest, lib, genetic_format, initial_genotype)
   toolbox.register("individual", tools.initRepeat, creator.Individual, toolbox.attr_simplest_genotype, 1)
   toolbox.register("population", tools.initRepeat, list, toolbox.individual)
@@ -245,12 +285,19 @@ def save_population(population): return [
 ]
 
 def main():
-  global constants, OptimizationTargets
+  global constants, OptimizationTargets, ParameterScheduler
   constants = Arguments.parse()
-  OptimizationTargets = ['vertpos']
-
-  FramsticksLib.DETERMINISTIC = False
   frams_lib = FramsticksLib(constants.path, constants.lib, constants.sim)
+  monkey_patch_genman()
+
+  constants.parameter_scheduler_parameters = {
+    key: frams.GenMan[key]
+    for key in constants.parameter_scheduler_parameters
+  }
+
+  OptimizationTargets = constants.opt
+  ParameterScheduler = create_parameters_scheduler(constants.parameter_scheduler_parameters, constants.parameter_scheduler_factor)
+  FramsticksLib.DETERMINISTIC = False
 
   toolbox = prepare_toolbox(
     frams_lib,
