@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Any
 
-from commands.command import OptimizationTarget
+from src.commands.command import OptimizationTarget
 
 @dataclass
 class Individual(object):

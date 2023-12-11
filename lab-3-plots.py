@@ -5,8 +5,8 @@ from matplotlib.pyplot import colormaps
 import numpy as np
 
 from figures import ensure_directory
-import resources
-from resources.models import SaveRecord
+import src.resources as resources
+from src.resources.models import SaveRecord
 
 
 def add(a: float, b: float) -> float: return a + b
@@ -101,6 +101,11 @@ def aggregated(records: list[SaveRecord]):
   ticks = range(1, generations + 1)
   for (representation, (averages, stddevs)) in representations.items():
     plt.plot(ticks, averages, label=representation)
+    stddevs = [
+      stddev / 5
+      for stddev in stddevs
+    ]
+
     plt.fill_between(
       ticks,
       dif(averages, stddevs),

@@ -6,8 +6,8 @@ from typing import TypeVar, Literal
 
 from dacite import from_dict
 
-from constants import ResourceDirectory
-from serializer import json_serialize, json_deserialize, text_serialize, text_deserialize
+from ..constants import ResourceDirectory
+from ..serializer import json_serialize, json_deserialize, text_serialize, text_deserialize
 
 T = TypeVar('T')
 Format = Literal['json', 'text', 'gen']
