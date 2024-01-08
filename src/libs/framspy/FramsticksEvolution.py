@@ -1,16 +1,24 @@
 import argparse
 from dataclasses import dataclass
 import os
-import sys
 from typing import Generator
+
+MODULE_PATH = "./src/__init__.py"
+MODULE_NAME = "src"
+import importlib.util as utl
+import sys
+spec = utl.spec_from_file_location(MODULE_NAME, MODULE_PATH)
+module = utl.module_from_spec(spec)
+sys.modules[spec.name] = module
+spec.loader.exec_module(module)
 
 from deap import creator, base, tools, algorithms
 import numpy as np
 
 from FramsticksLib import FramsticksLib
-from commands.command import OptimizationTarget
+from src.commands.command import OptimizationTarget
 import frams
-from resources import resources
+from src.resources import resources
 
 
 def ensure_dir(string: str):

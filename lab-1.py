@@ -1,13 +1,14 @@
 import numpy as np
 
-from commands import Command
-from commands.utils import invoke
-import sims
+from src.commands import Command
+from src.commands.utils import invoke
+import src.sims as sims
 
 def main():
   commands: list[Command] = []
 
-  for f9_mut in np.linspace(0, 0.5, 11):
+  # for f9_mut in np.linspace(0, 0.5, 11):
+  for f9_mut in [0]:
     name = f'f9-mut-{f9_mut:.2f}'
     sims.create(
       name,
