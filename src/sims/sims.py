@@ -2,7 +2,7 @@ from os import makedirs
 from os.path import isdir, dirname
 from pathlib import Path
 
-from constants import SimDirectory
+from src.constants import SimDirectory
 
 def trim_common_space_count(content: str) -> str:
   lines = content.splitlines()

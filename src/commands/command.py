@@ -3,7 +3,7 @@ import subprocess
 import sys
 from typing import Literal, Any, Callable
 
-from constants import constants
+from src.constants import constants
 
 OptimizationTarget = Literal[
   'vertpos', 'velocity', 'distance', 'vertvel', 'lifespan', 'numjoints', 'numparts', 'numneurons', 'numconnections'
@@ -37,7 +37,7 @@ class Command(object):
   parameter_scheduler_factor: float | None = None
 
   def __iter__(self):
-    def with_optional_flags(initial: list[str], *flags: tuple[str, Any, Callable[Any, str]]):
+    def with_optional_flags(initial: list[str], *flags: tuple[str, Any, Callable[[Any], str]]):
       for (name, value, *args) in flags:
         if value is None: continue
         converter = str if len(args) == 0 else args[0]
