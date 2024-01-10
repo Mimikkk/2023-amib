@@ -21,7 +21,7 @@ def main():
       )
     )
 
-  for genetic_format in ("1", "4", "9"):
+  for genetic_format in ("0", "1", "4", "9"):
     for iteration in range(1, 300 + 1):
       create_command(
         name=f"lab-4/results/HoF-vert-{genetic_format}-{iteration}",
