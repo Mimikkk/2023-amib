@@ -22,14 +22,14 @@ def main():
     )
 
   for genetic_format in ("0", "1", "4", "9"):
-    for iteration in range(1, 300 + 1):
+    for iteration in range(1, 320 + 1):
       create_command(
         name=f"lab-4/results/HoF-vert-{genetic_format}-{iteration}",
         sims=[f'eval-allcriteria', "deterministic", 'sample-period-longest'],
         genetic_format=genetic_format,
       )
 
-  batches = len(commands) // 10
+  batches = len(commands) // 32
 
   for i in range(batches):
     batch = commands[i * 10: (i + 1) * 10]

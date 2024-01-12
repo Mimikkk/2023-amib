@@ -18,7 +18,6 @@ import numpy as np
 from FramsticksLib import FramsticksLib
 from src.commands.command import OptimizationTarget
 import frams
-from src.resources import resources
 
 
 def ensure_dir(string: str):
@@ -211,14 +210,12 @@ def frams_evaluate(lib, individual):
   valid = True
   try:
     evaluation = lib.evaluate([genotype])[0]['evaluations'][""]
-    fitness = [evaluation[target] for target in OptimizationTargets]
+    # fitness = [evaluation[target] for target in OptimizationTargets]
 
-    # fitness = [
-    #   evaluation[target]
-    #   if evaluation[target] > 0 else
-    #   evaluation[target] + (evaluation['numparts'] / constants.max_numparts / 5)
-    #   for target in OptimizationTargets
-    # ]
+    fitness = [
+      evaluation[target] if evaluation[target] > 0 else -10000
+      for target in OptimizationTargets
+    ]
 
     evaluation['numgenocharacters'] = len(genotype)
     valid &= within_constraint(genotype, evaluation, 'numparts', constants.max_numparts)
@@ -254,6 +251,8 @@ def frams_crossover(lib, first, second):
 def frams_mutate(lib, individual):
   # individual[0] because we can't (?) have a simple str as a deap genotype/individual, only list of str.
   individual[0] = lib.mutate([individual[0]])[0]
+  print(individual)
+
   return individual,
 def frams_getsimplest(lib, genetic_format, initial_genotype):
   return initial_genotype if initial_genotype else lib.getSimplest(genetic_format)
@@ -295,6 +294,7 @@ def save_population(population): return [
 def main():
   global constants, OptimizationTargets, ParameterScheduler
   constants = Arguments.parse()
+  print(constants.path, constants.lib, constants.sim)
   frams_lib = FramsticksLib(constants.path, constants.lib, constants.sim)
   monkey_patch_genman()
 
@@ -336,10 +336,7 @@ def main():
 
   if not constants.hof_savefile: return
   resources.create(constants.hof_savefile, {
-    "meta": {
-      "command": " ".join(sys.argv),
-      "arguments": vars(constants),
-    },
+    "meta": {"command": " ".join(sys.argv), "arguments": vars(constants)},
     "name": constants.hof_savefile,
     "population": save_population(best_population),
     "history": list(logbook)[1:],
