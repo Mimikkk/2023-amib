@@ -16,8 +16,9 @@ from deap import creator, base, tools, algorithms
 import numpy as np
 
 from FramsticksLib import FramsticksLib
+import src.libs.framspy.frams as frams
 from src.commands.command import OptimizationTarget
-import frams
+from src.resources import resources
 
 
 def ensure_dir(string: str):
@@ -249,11 +250,9 @@ def frams_crossover(lib, first, second):
   second[0] = lib.crossOver(geno1, geno2)
   return first, second
 def frams_mutate(lib, individual):
-  # individual[0] because we can't (?) have a simple str as a deap genotype/individual, only list of str.
   individual[0] = lib.mutate([individual[0]])[0]
-  print(individual)
-
   return individual,
+
 def frams_getsimplest(lib, genetic_format, initial_genotype):
   return initial_genotype if initial_genotype else lib.getSimplest(genetic_format)
 def prepare_toolbox(lib, tournament_size, genetic_format, initial_genotype):
@@ -294,7 +293,6 @@ def save_population(population): return [
 def main():
   global constants, OptimizationTargets, ParameterScheduler
   constants = Arguments.parse()
-  print(constants.path, constants.lib, constants.sim)
   frams_lib = FramsticksLib(constants.path, constants.lib, constants.sim)
   monkey_patch_genman()
 

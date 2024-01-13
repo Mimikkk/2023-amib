@@ -42,7 +42,7 @@ class FramsticksLib:
   #	it many times."""
   #	return frams
 
-  def __init__(self, frams_path, frams_lib_name, sim_settings_files):
+  def __init__(self, frams_path, frams_lib_name, sim_settings_files, *, silent: bool = True):
     self.dissim_measure_density_distribution = None  # will be initialized only when necessary (for rare dissimilarity methods)
 
     if frams_lib_name is None:
@@ -50,8 +50,9 @@ class FramsticksLib:
     else:
       frams.init(frams_path, "-L" + frams_lib_name)  # could add support for setting alternative directories using -D and -d
 
-    print('Available objects:', dir(frams))
-    print()
+    if not silent:
+      print('Available objects:', dir(frams))
+      print()
 
     simplest = self.getSimplest("1")
     if not (simplest == "X" and type(simplest) is str):
@@ -64,8 +65,10 @@ class FramsticksLib:
     frams.Simulator.expdef = "standard-eval"  # this expdef (or fully compatible) must be used by EVALUATION_SETTINGS_FILE
     if sim_settings_files is not None:
       self.EVALUATION_SETTINGS_FILE = sim_settings_files.split(";")  # override defaults. str becomes list
-    print('Basic tests OK. Using settings:', self.EVALUATION_SETTINGS_FILE)
-    print()
+
+    if not silent:
+      print('Basic tests OK. Using settings:', self.EVALUATION_SETTINGS_FILE)
+      print()
 
     for simfile in self.EVALUATION_SETTINGS_FILE:
       ec = frams.MessageCatcher.new()  # catch potential errors, warnings, messages - just to detect if there are ERRORs
@@ -161,8 +164,8 @@ class FramsticksLib:
       if ec.error_count._value() > 0:
         print(ec.messages)  # if errors occurred, output all caught messages for debugging
         raise RuntimeError("[ERROR] %d error(s) and %d warning(s) while evaluating %d genotype(s)" % (
-        ec.error_count._value(), ec.warning_count._value(), len(
-          genotype_list)))  # make errors fatal; by default they stop the simulation anyway so let's not use potentially incorrect or partial results and fix the cause first.
+          ec.error_count._value(), ec.warning_count._value(), len(
+            genotype_list)))  # make errors fatal; by default they stop the simulation anyway so let's not use potentially incorrect or partial results and fix the cause first.
 
     results = []
     for g in frams.GenePools[0]:
@@ -278,7 +281,7 @@ class FramsticksLib:
       diff_parts = abs(target_parts - numparts)
       diff_neurons = abs(target_neurons - numneurons)
       in_target_range = (parts_min <= numparts <= parts_max) and (
-            neurons_min <= numneurons <= neurons_max)  # less demanding than precisely reaching target_parts and target_neurons
+          neurons_min <= numneurons <= neurons_max)  # less demanding than precisely reaching target_parts and target_neurons
       return diff_parts + diff_neurons, in_target_range
 
 
