@@ -1,0 +1,951 @@
+{
+  "meta": {
+    "command": "src/libs/framspy/FramsticksEvolution.py -path src/libs/Framsticks50rc29 -opt vertpos -sim eval-allcriteria.sim;deterministic.sim;sample-period-longest.sim -genformat 1 -popsize 100 -generations 70 -hof_size 1 -hof_savefile lab-5/results/1/HoF-vert-1-24 -max_numparts 30 -max_numjoints 30 -max_numneurons 20 -max_numconnections 30",
+    "arguments": {
+      "path": "src/libs/Framsticks50rc29",
+      "opt": [
+        "vertpos"
+      ],
+      "lib": null,
+      "sim": "eval-allcriteria.sim;deterministic.sim;sample-period-longest.sim",
+      "genformat": "1",
+      "initialgenotype": null,
+      "popsize": 100,
+      "generations": 70,
+      "tournament": 5,
+      "pmut": 0.9,
+      "pxov": 0.2,
+      "hof_size": 1,
+      "hof_savefile": "lab-5/results/1/HoF-vert-1-24",
+      "max_numparts": 30,
+      "max_numjoints": 30,
+      "max_numneurons": 20,
+      "max_numconnections": 30,
+      "max_numgenochars": null,
+      "parameter_scheduler_factor": 1.0,
+      "parameter_scheduler_parameters": {}
+    }
+  },
+  "name": "lab-5/results/1/HoF-vert-1-24",
+  "population": [
+    {
+      "_classname": "org",
+      "genotype": "(QX[G], , , XCqfXXCX(RX))",
+      "values": {
+        "vertpos": 0.2824449336238138
+      }
+    }
+  ],
+  "history": [
+    {
+      "gen": 1,
+      "nevals": 88,
+      "avg": -10.0,
+      "stddev": 0.0,
+      "min": -10.0,
+      "max": -10.0,
+      "values": [
+        {
+          "vertpos": -10.0
+        }
+      ]
+    },
+    {
+      "gen": 2,
+      "nevals": 90,
+      "avg": -9.91,
+      "stddev": 0.895488693395958,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 3,
+      "nevals": 97,
+      "avg": -9.91,
+      "stddev": 0.8954886933959579,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 4,
+      "nevals": 91,
+      "avg": -9.64,
+      "stddev": 1.7636326148038879,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 5,
+      "nevals": 89,
+      "avg": -8.65,
+      "stddev": 3.213642792844283,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 6,
+      "nevals": 94,
+      "avg": -5.86,
+      "stddev": 4.48557688597576,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 7,
+      "nevals": 92,
+      "avg": -1.81,
+      "stddev": 2.575635843825753,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 8,
+      "nevals": 96,
+      "avg": -1.63,
+      "stddev": 2.2963231479911532,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 9,
+      "nevals": 93,
+      "avg": -1.09,
+      "stddev": 0.895488693395958,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 10,
+      "nevals": 96,
+      "avg": -1.45,
+      "stddev": 1.9615045245933032,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 11,
+      "nevals": 91,
+      "avg": -1.45,
+      "stddev": 1.9615045245933032,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 12,
+      "nevals": 93,
+      "avg": -1.45,
+      "stddev": 1.961504524593303,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 13,
+      "nevals": 90,
+      "avg": -1.09,
+      "stddev": 0.8954886933959579,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 14,
+      "nevals": 93,
+      "avg": -1.18,
+      "stddev": 1.2599999999999996,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 15,
+      "nevals": 94,
+      "avg": -1.45,
+      "stddev": 1.9615045245933027,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 16,
+      "nevals": 91,
+      "avg": -1.18,
+      "stddev": 1.2599999999999998,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 17,
+      "nevals": 91,
+      "avg": -1.18,
+      "stddev": 1.2599999999999998,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 18,
+      "nevals": 94,
+      "avg": -1.36,
+      "stddev": 1.7636326148038879,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 19,
+      "nevals": 89,
+      "avg": -1.27,
+      "stddev": 1.5352849898308785,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 20,
+      "nevals": 96,
+      "avg": -1.27,
+      "stddev": 1.5352849898308785,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 21,
+      "nevals": 91,
+      "avg": -1.36,
+      "stddev": 1.763632614803888,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 22,
+      "nevals": 90,
+      "avg": -1.0,
+      "stddev": 0.0,
+      "min": -1.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 23,
+      "nevals": 93,
+      "avg": -1.36,
+      "stddev": 1.763632614803888,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 24,
+      "nevals": 94,
+      "avg": -1.09,
+      "stddev": 0.8954886933959579,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 25,
+      "nevals": 93,
+      "avg": -1.27,
+      "stddev": 1.5352849898308785,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 26,
+      "nevals": 96,
+      "avg": -1.18,
+      "stddev": 1.2599999999999998,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 27,
+      "nevals": 93,
+      "avg": -1.18,
+      "stddev": 1.2599999999999998,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 28,
+      "nevals": 95,
+      "avg": -1.0,
+      "stddev": 0.0,
+      "min": -1.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 29,
+      "nevals": 90,
+      "avg": -1.09,
+      "stddev": 0.8954886933959579,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 30,
+      "nevals": 91,
+      "avg": -1.0,
+      "stddev": 0.0,
+      "min": -1.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 31,
+      "nevals": 92,
+      "avg": -1.18,
+      "stddev": 1.2599999999999998,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 32,
+      "nevals": 95,
+      "avg": -1.09,
+      "stddev": 0.895488693395958,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 33,
+      "nevals": 98,
+      "avg": -1.18,
+      "stddev": 1.2599999999999996,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 34,
+      "nevals": 92,
+      "avg": -1.09,
+      "stddev": 0.8954886933959579,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 35,
+      "nevals": 88,
+      "avg": -1.09,
+      "stddev": 0.8954886933959579,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 36,
+      "nevals": 92,
+      "avg": -1.27,
+      "stddev": 1.5352849898308787,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 37,
+      "nevals": 86,
+      "avg": -1.27,
+      "stddev": 1.5352849898308787,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 38,
+      "nevals": 92,
+      "avg": -1.36,
+      "stddev": 1.7636326148038879,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 39,
+      "nevals": 90,
+      "avg": -1.18,
+      "stddev": 1.2599999999999998,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 40,
+      "nevals": 95,
+      "avg": -1.18,
+      "stddev": 1.2599999999999998,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 41,
+      "nevals": 88,
+      "avg": -1.18,
+      "stddev": 1.2599999999999998,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 42,
+      "nevals": 88,
+      "avg": -1.36,
+      "stddev": 1.7636326148038879,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 43,
+      "nevals": 95,
+      "avg": -1.54,
+      "stddev": 2.1373815756668253,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 44,
+      "nevals": 95,
+      "avg": -1.18,
+      "stddev": 1.2599999999999996,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 45,
+      "nevals": 88,
+      "avg": -1.09,
+      "stddev": 0.8954886933959579,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 46,
+      "nevals": 95,
+      "avg": -1.18,
+      "stddev": 1.2599999999999998,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 47,
+      "nevals": 90,
+      "avg": -1.36,
+      "stddev": 1.763632614803888,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 48,
+      "nevals": 97,
+      "avg": -1.36,
+      "stddev": 1.7636326148038879,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 49,
+      "nevals": 94,
+      "avg": -1.09,
+      "stddev": 0.895488693395958,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 50,
+      "nevals": 92,
+      "avg": -1.0,
+      "stddev": 0.0,
+      "min": -1.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 51,
+      "nevals": 90,
+      "avg": -1.09,
+      "stddev": 0.8954886933959579,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 52,
+      "nevals": 92,
+      "avg": -1.0,
+      "stddev": 0.0,
+      "min": -1.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 53,
+      "nevals": 97,
+      "avg": -1.36,
+      "stddev": 1.7636326148038879,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 54,
+      "nevals": 95,
+      "avg": -1.18,
+      "stddev": 1.2599999999999996,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 55,
+      "nevals": 95,
+      "avg": -1.45,
+      "stddev": 1.9615045245933032,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 56,
+      "nevals": 93,
+      "avg": -1.0,
+      "stddev": 0.0,
+      "min": -1.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 57,
+      "nevals": 90,
+      "avg": -1.09,
+      "stddev": 0.895488693395958,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 58,
+      "nevals": 91,
+      "avg": -1.09,
+      "stddev": 0.895488693395958,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 59,
+      "nevals": 91,
+      "avg": -1.09,
+      "stddev": 0.8954886933959579,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 60,
+      "nevals": 88,
+      "avg": -1.27,
+      "stddev": 1.5352849898308785,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 61,
+      "nevals": 95,
+      "avg": -1.36,
+      "stddev": 1.7636326148038879,
+      "min": -10.0,
+      "max": -1.0,
+      "values": [
+        {
+          "vertpos": -1.0
+        }
+      ]
+    },
+    {
+      "gen": 62,
+      "nevals": 94,
+      "avg": -1.1698871175471952,
+      "stddev": 1.2654506732551571,
+      "min": -10.0,
+      "max": 0.011288245280466593,
+      "values": [
+        {
+          "vertpos": 0.011288245280466593
+        }
+      ]
+    },
+    {
+      "gen": 63,
+      "nevals": 90,
+      "avg": -1.1294114006779057,
+      "stddev": 1.2862491694594378,
+      "min": -10.0,
+      "max": 0.014635151343699564,
+      "values": [
+        {
+          "vertpos": 0.014635151343699564
+        }
+      ]
+    },
+    {
+      "gen": 64,
+      "nevals": 90,
+      "avg": -1.477390226618615,
+      "stddev": 2.3658983068203803,
+      "min": -10.0,
+      "max": 0.1188464747716758,
+      "values": [
+        {
+          "vertpos": 0.1188464747716758
+        }
+      ]
+    },
+    {
+      "gen": 65,
+      "nevals": 92,
+      "avg": -1.3184999810696993,
+      "stddev": 2.7734956423718455,
+      "min": -10.0,
+      "max": 0.1188464747716758,
+      "values": [
+        {
+          "vertpos": 0.1188464747716758
+        }
+      ]
+    },
+    {
+      "gen": 66,
+      "nevals": 93,
+      "avg": -1.5101244175241388,
+      "stddev": 3.572367960051781,
+      "min": -10.0,
+      "max": 0.1585717831178076,
+      "values": [
+        {
+          "vertpos": 0.1585717831178076
+        }
+      ]
+    },
+    {
+      "gen": 67,
+      "nevals": 91,
+      "avg": -0.9412949122727311,
+      "stddev": 3.0197890442339403,
+      "min": -10.0,
+      "max": 0.1585717831178076,
+      "values": [
+        {
+          "vertpos": 0.1585717831178076
+        }
+      ]
+    },
+    {
+      "gen": 68,
+      "nevals": 86,
+      "avg": -0.8108302129335914,
+      "stddev": 2.890035649364852,
+      "min": -10.0,
+      "max": 0.16582973466631798,
+      "values": [
+        {
+          "vertpos": 0.16582973466631798
+        }
+      ]
+    },
+    {
+      "gen": 69,
+      "nevals": 87,
+      "avg": -0.2848578147367698,
+      "stddev": 1.983531777540841,
+      "min": -10.0,
+      "max": 0.2824449336238138,
+      "values": [
+        {
+          "vertpos": 0.2824449336238138
+        }
+      ]
+    },
+    {
+      "gen": 70,
+      "nevals": 95,
+      "avg": -0.8699729601420462,
+      "stddev": 3.0436393308062843,
+      "min": -10.0,
+      "max": 0.2824449336238111,
+      "values": [
+        {
+          "vertpos": 0.2824449336238138
+        }
+      ]
+    }
+  ]
+}
