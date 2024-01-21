@@ -129,7 +129,6 @@ def aggregated(records: list[SaveRecord]):
   )
   plt.savefig(f'resources/lab-6/figures/all-aggregated.png', bbox_inches='tight')
 
-@cache_pickle('.lab-6-pickle-records', 'records')
 def read_records(): return [
   resources.read(name, model=SaveRecord) for name in resources.names("./lab-6/results")
 ]

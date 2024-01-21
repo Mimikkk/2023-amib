@@ -273,21 +273,21 @@ def save_population(population): return [
 class Node: pass
 class Tree: pass
 
-def primitive_node(tail):
-  if not tail: return 'X'
-  return f"X{tail}"
+def primitive_node(postfix):
+  if not postfix: return 'X'
+  return f"X{postfix}"
 
-def primitive_parenthesis(tail):
-  if not tail or 'X' not in tail: return ''
-  return f'({tail})'
+def primitive_parenthesis(infix):
+  if not infix or 'X' not in infix: return ''
+  return f'({infix})'
 
-def primitive_split(head, tail):
-  return f'{head if head else ""}{f",{tail}" if tail else ""}'
+def primitive_split(prefix, postfix):
+  return f'{prefix if prefix else ""}{f",{postfix}" if postfix else ""}'
 
 def create_primitive_modifier(modifier):
-  def primitive(tail):
-    if not tail: return ''
-    return f"{modifier}{tail}"
+  def primitive(postfix):
+    if not postfix: return ''
+    return f"{modifier}{postfix}"
   return primitive
 
 primitives = gp.PrimitiveSetTyped('main', [], Node)
