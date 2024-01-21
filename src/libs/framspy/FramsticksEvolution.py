@@ -1,6 +1,7 @@
 import argparse
 from dataclasses import dataclass
 import os
+from typing import Generator
 
 MODULE_PATH = "./src/__init__.py"
 MODULE_NAME = "src"
@@ -11,7 +12,7 @@ module = utl.module_from_spec(spec)
 sys.modules[spec.name] = module
 spec.loader.exec_module(module)
 
-from deap import creator, base, tools, algorithms, gp
+from deap import creator, base, tools, algorithms
 import numpy as np
 
 from FramsticksLib import FramsticksLib
@@ -178,10 +179,19 @@ class Arguments(object):
 
 OptimizationTargets: list[OptimizationTarget]
 constants: Arguments
+ParameterScheduler: Generator[dict[str, float], None, None]
 
 def monkey_patch_genman():
   frams.GenMan.__dict__['get'] = lambda key: frams.GenMan.__getattr__(key)._value()
   frams.GenMan.__dict__['set'] = frams.GenMan.__setattr__
+
+def create_parameters_scheduler(params: dict[str, float], factor: float):
+  while True:
+    for (key, value) in params.items():
+      params[key] *= factor
+
+    yield params
+
 def within_constraint(genotype, values, criterion, max_value):
   REPORT_CONSTRAINT_VIOLATIONS = False
   if max_value is None: return True
@@ -194,59 +204,69 @@ def within_constraint(genotype, values, criterion, max_value):
       )
     return False
   return True
-def frams_evaluate(lib: FramsticksLib, individual):
+def frams_evaluate(lib, individual):
   unfit = [-1] * len(OptimizationTargets)
-  genotype = gp.compile(individual, primitives)
-  data = lib.evaluate([genotype])
+  genotype = individual[0]
+
   valid = True
   try:
-    first_genotype_data = data[0]
-    values = first_genotype_data["evaluations"][""]
-    fitness = [values[target] for target in OptimizationTargets]
+    evaluation = lib.evaluate([genotype])[0]['evaluations'][""]
+    fitness = [evaluation[target] for target in OptimizationTargets]
 
-  except (KeyError, TypeError) as e:
-    valid = False
-    print('Problem "%s" so could not evaluate genotype "%s", hence assigned it low fitness: %s' % (str(e), genotype, unfit))
-  if valid:
-    values['numgenocharacters'] = len(genotype)
-    valid &= within_constraint(genotype, values, 'numparts', constants.max_numparts)
-    valid &= within_constraint(genotype, values, 'numjoints', constants.max_numjoints)
-    valid &= within_constraint(genotype, values, 'numneurons', constants.max_numneurons)
-    valid &= within_constraint(genotype, values, 'numconnections', constants.max_numconnections)
-    valid &= within_constraint(genotype, values, 'numgenocharacters', constants.max_numgenochars)
-  if not valid: return unfit
+    # fitness = [
+    #   evaluation[target] if evaluation[target] > 0 else -10
+    #   for target in OptimizationTargets
+    # ]
+
+    evaluation['numgenocharacters'] = len(genotype)
+    valid &= within_constraint(genotype, evaluation, 'numparts', constants.max_numparts)
+    valid &= within_constraint(genotype, evaluation, 'numjoints', constants.max_numjoints)
+    valid &= within_constraint(genotype, evaluation, 'numneurons', constants.max_numneurons)
+    valid &= within_constraint(genotype, evaluation, 'numconnections', constants.max_numconnections)
+    valid &= within_constraint(genotype, evaluation, 'numgenocharacters', constants.max_numgenochars)
+    if not valid: return unfit
+  except (KeyError, TypeError) as error:
+    # the evaluation may have failed for an invalid genotype
+    # (such as X[@][@] with "Don't simulate genotypes with warnings" option) or for some other reason.
+    print(
+      f'Problem "{error}" so could not evaluate genotype "{genotype}", hence assigned it low fitness: {unfit}'
+    )
+    return unfit
+
   return fitness
 
-def frams_crossover(lib: FramsticksLib, first, second):
-  gen1 = first[0]
-  gen2 = second[0]
-  first[0] = lib.crossOver(gen1, gen2)
-  second[0] = lib.crossOver(gen1, gen2)
+def frams_update_sim_params():
+  params = next(ParameterScheduler)
+
+  for (key, value) in params.items():
+    frams.GenMan[key] = value
+
+def frams_crossover(lib, first, second):
+  # individual[0] because we can't (?) have a simple str as a deap genotype/individual, only list of str.
+  geno1 = first[0]
+  # individual[0] because we can't (?) have a simple str as a deap genotype/individual, only list of str.
+  geno2 = second[0]
+  first[0] = lib.crossOver(geno1, geno2)
+  second[0] = lib.crossOver(geno1, geno2)
   return first, second
-def frams_mutate(lib: FramsticksLib, individual):
+def frams_mutate(lib, individual):
   individual[0] = lib.mutate([individual[0]])[0]
   return individual,
-def frams_getsimplest(lib: FramsticksLib, genetic_format, initial_genotype):
-  return initial_genotype if initial_genotype is not None else lib.getSimplest(genetic_format)
-def prepare_toolbox(lib: FramsticksLib, tournament_size, genetic_format, initial_genotype):
-  creator.create("FitnessMax", base.Fitness, weights=[1.0] * len(OptimizationTargets))
-  creator.create("Individual", gp.PrimitiveTree, fitness=creator.FitnessMax)
 
-  # toolbox = base.Toolbox()
-  # toolbox.register("attr_simplest_genotype", frams_getsimplest, lib, genetic_format, initial_genotype)
-  # toolbox.register("individual", tools.initRepeat, creator.Individual, toolbox.attr_simplest_genotype, 1)
-  # toolbox.register("population", tools.initRepeat, list, toolbox.individual)
-  # toolbox.register("evaluate", frams_evaluate, lib)
-  # toolbox.register("mate", frams_crossover, lib)
-  # toolbox.register("mutate", frams_mutate, lib)
+def frams_getsimplest(lib, genetic_format, initial_genotype):
+  return initial_genotype if initial_genotype else lib.getSimplest(genetic_format)
+def prepare_toolbox(lib, tournament_size, genetic_format, initial_genotype):
+  creator.create("FitnessMax", base.Fitness, weights=[1.0] * len(OptimizationTargets))
+  creator.create("Individual", list, fitness=creator.FitnessMax)
+
   toolbox = base.Toolbox()
-  toolbox.register("expr", gp.genHalfAndHalf, pset=primitives, min_=1, max_=10)
-  toolbox.register("individual", tools.initIterate, creator.Individual, toolbox.expr)
+  toolbox.register("update_sim_params", frams_update_sim_params)
+  toolbox.register("attr_simplest_genotype", frams_getsimplest, lib, genetic_format, initial_genotype)
+  toolbox.register("individual", tools.initRepeat, creator.Individual, toolbox.attr_simplest_genotype, 1)
   toolbox.register("population", tools.initRepeat, list, toolbox.individual)
   toolbox.register("evaluate", frams_evaluate, lib)
-  toolbox.register("mate", gp.cxOnePoint)
-  toolbox.register("expr_mut", gp.genFull, min_=1, max_=10)
-  toolbox.register("mutate", gp.mutUniform, expr=toolbox.expr_mut, pset=primitives)
+  toolbox.register("mate", frams_crossover, lib)
+  toolbox.register("mutate", frams_mutate, lib)
 
   if len(OptimizationTargets) <= 1:
     toolbox.register("select", tools.selTournament, tournsize=tournament_size)
@@ -254,6 +274,7 @@ def prepare_toolbox(lib: FramsticksLib, tournament_size, genetic_format, initial
     toolbox.register("select", tools.selNSGA2)
 
   return toolbox
+
 def save_scores(individual): return {
   criteria: individual.fitness.values[index] for (index, criteria) in enumerate(OptimizationTargets)
 }
@@ -263,49 +284,16 @@ def save_population_scores(population): return [
 def save_population(population): return [
   {
     "_classname": "org",
-    "genotype": gp.compile(individual, primitives),
+    "genotype": individual[0],
     "values": save_scores(individual)
   }
   for individual in population
 ]
 
-
-class Node: pass
-class Tree: pass
-
-def primitive_node(tail):
-  if not tail: return 'X'
-  return f"X{tail}"
-
-def primitive_parenthesis(tail):
-  if not tail or 'X' not in tail: return ''
-  return f'({tail})'
-
-def primitive_split(head, tail):
-  return f'{head if head else ""}{f",{tail}" if tail else ""}'
-
-def create_primitive_modifier(modifier):
-  def primitive(tail):
-    if not tail: return ''
-    return f"{modifier}{tail}"
-  return primitive
-
-primitives = gp.PrimitiveSetTyped('main', [], Node)
-primitives.addPrimitive(primitive_node, [Node], Node)
-primitives.addPrimitive(primitive_parenthesis, [Tree], Node)
-primitives.addPrimitive(primitive_split, [Node, Tree], Tree)
-modifiers = ['R', 'r', 'Q', 'q', 'C', 'c', 'L', 'l', 'W', 'w', 'F', 'f']
-for modifier in modifiers:
-  primitives.addPrimitive(create_primitive_modifier(modifier), [Node], Node, name=f'modifier_{modifier}')
-
-primitives.addTerminal('X', Node)
-primitives.addTerminal(None, Tree)
-primitives.addTerminal('', Tree)
-
 def main():
-  global constants, OptimizationTargets
+  global constants, OptimizationTargets, ParameterScheduler
   constants = Arguments.parse()
-  lib = FramsticksLib(constants.path, constants.lib, constants.sim)
+  frams_lib = FramsticksLib(constants.path, constants.lib, constants.sim)
   monkey_patch_genman()
 
   constants.parameter_scheduler_parameters = {
@@ -314,10 +302,11 @@ def main():
   }
 
   OptimizationTargets = constants.opt
+  ParameterScheduler = create_parameters_scheduler(constants.parameter_scheduler_parameters, constants.parameter_scheduler_factor)
   FramsticksLib.DETERMINISTIC = False
 
   toolbox = prepare_toolbox(
-    lib,
+    frams_lib,
     constants.tournament,
     constants.genformat,
     constants.initialgenotype
@@ -325,8 +314,8 @@ def main():
 
   population = toolbox.population(n=constants.popsize)
   best_population = tools.HallOfFame(constants.hof_size)
-
   statistics = tools.Statistics(lambda ind: ind.fitness.values)
+
   statistics.register("avg", np.mean)
   statistics.register("stddev", np.std)
   statistics.register("min", np.min)
