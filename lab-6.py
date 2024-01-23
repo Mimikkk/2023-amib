@@ -24,7 +24,7 @@ def main():
     for iteration in range(1, 64 + 1):
       create_command(
         name=f"lab-5/results/gp/HoF-vert-1-{iteration}",
-        sims=[f'eval-allcriteria', "deterministic", 'sample-period-longest'],
+        sims=[f'eval-allcriteria', "deterministic", 'only-body'],
         genetic_format=genetic_format,
       )
 

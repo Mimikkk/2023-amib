@@ -137,7 +137,6 @@ def trim_records(records: list[SaveRecord]) -> list[SaveRecord]:
   return [
     record
     for record in records
-    if record.population[0].values['vertpos'] > 0.05
   ]
 
 def main():
