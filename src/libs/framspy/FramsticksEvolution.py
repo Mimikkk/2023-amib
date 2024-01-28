@@ -204,6 +204,29 @@ def within_constraint(genotype, values, criterion, max_value):
       )
     return False
   return True
+
+def cross(o, a, b): return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
+def convex_hull(points: list[tuple[float, float, float]]) -> tuple[float, float, float]:
+  points = sorted(set(points))
+  if len(points) < 3: return points
+
+  lower = []
+  for point in points:
+    while len(lower) >= 2 and cross(lower[-2], lower[-1], point) <= 0: lower.pop()
+    lower.append(point)
+
+  upper = []
+  for point in reversed(points):
+    while len(upper) >= 2 and cross(upper[-2], upper[-1], point) <= 0: upper.pop()
+    upper.append(point)
+  return lower[:-1] + upper[:-1]
+
+
+def shoelace_area(parts) -> float:
+  return 0.5 * abs(sum(x0 * y1 - x1 * y0 for ((x0, y0, _), (x1, y1, _)) in zip(parts, parts[1:] + parts[:1])))
+
+def around_zero(value, epsilon=1e-6): return abs(value) < epsilon
+
 def frams_evaluate(lib, individual):
   unfit = [-1] * len(OptimizationTargets)
   genotype = individual[0]
@@ -211,12 +234,10 @@ def frams_evaluate(lib, individual):
   valid = True
   try:
     evaluation = lib.evaluate([genotype])[0]['evaluations'][""]
-    fitness = [evaluation[target] for target in OptimizationTargets]
+    positions: list[tuple[float, float, float]] = [(x, y, z) for (x, y, z) in evaluation["data->bodyrecording"]]
 
-    # fitness = [
-    #   evaluation[target] if evaluation[target] > 0 else -10
-    #   for target in OptimizationTargets
-    # ]
+    area = shoelace_area(convex_hull(positions))
+    fitness = [-10 if around_zero(area) else area]
 
     evaluation['numgenocharacters'] = len(genotype)
     valid &= within_constraint(genotype, evaluation, 'numparts', constants.max_numparts)
@@ -276,7 +297,7 @@ def prepare_toolbox(lib, tournament_size, genetic_format, initial_genotype):
   return toolbox
 
 def save_scores(individual): return {
-  criteria: individual.fitness.values[index] for (index, criteria) in enumerate(OptimizationTargets)
+  'fitness': individual.fitness.values[index] for (index, criteria) in enumerate(OptimizationTargets)
 }
 def save_population_scores(population): return [
   save_scores(individual) for individual in population

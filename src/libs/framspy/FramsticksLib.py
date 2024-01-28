@@ -77,6 +77,7 @@ class FramsticksLib:
       ec.close()
       # make missing files or incorrect paths fatal because error messages are easy to overlook in output, and these errors would not prevent Framsticks simulator from performing genetic operations, starting and running in evaluate()
       if ec.error_count._value() > 0:
+        print(ec.messages)
         raise ValueError("Problem while importing file '%s'" % simfile)
 
 
