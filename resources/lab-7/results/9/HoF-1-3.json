@@ -1,0 +1,366 @@
+{
+  "meta": {
+    "command": "src/libs/framspy/FramsticksEvolution.py -path src/libs/Framsticks50rc29 -opt vertpos -sim eval-allcriteria-mini.sim;deterministic.sim;only-body.sim;recording-body-coords-mini.sim -genformat 9 -popsize 100 -generations 25 -hof_size 1 -hof_savefile lab-7/results/9/HoF-1-3 -max_numparts 50 -max_numjoints 50 -max_numconnections 50",
+    "arguments": {
+      "path": "src/libs/Framsticks50rc29",
+      "opt": [
+        "vertpos"
+      ],
+      "lib": null,
+      "sim": "eval-allcriteria-mini.sim;deterministic.sim;only-body.sim;recording-body-coords-mini.sim",
+      "genformat": "9",
+      "initialgenotype": null,
+      "popsize": 100,
+      "generations": 25,
+      "tournament": 5,
+      "pmut": 0.9,
+      "pxov": 0.2,
+      "hof_size": 1,
+      "hof_savefile": "lab-7/results/9/HoF-1-3",
+      "max_numparts": 50,
+      "max_numjoints": 50,
+      "max_numneurons": null,
+      "max_numconnections": 50,
+      "max_numgenochars": null,
+      "parameter_scheduler_factor": 1.0,
+      "parameter_scheduler_parameters": {}
+    }
+  },
+  "name": "lab-7/results/9/HoF-1-3",
+  "population": [
+    {
+      "_classname": "org",
+      "genotype": "/*9*/BBBDBBBBRRRRRRRBBRRBRUBRUURURRURRFLURRUURURRRRRR",
+      "values": {
+        "vertpos": 148.56121703341068
+      }
+    }
+  ],
+  "history": [
+    {
+      "gen": 1,
+      "nevals": 87,
+      "avg": -6.3599166405537675,
+      "stddev": 4.961976897939551,
+      "min": -10.0,
+      "max": 0.5039940690983187,
+      "values": [
+        {
+          "vertpos": 0.5039940690983187
+        }
+      ]
+    },
+    {
+      "gen": 2,
+      "nevals": 92,
+      "avg": -3.158504417546966,
+      "stddev": 5.025802083869994,
+      "min": -10.0,
+      "max": 1.5069970536734374,
+      "values": [
+        {
+          "vertpos": 1.5069970536734374
+        }
+      ]
+    },
+    {
+      "gen": 3,
+      "nevals": 89,
+      "avg": -1.0010061476180105,
+      "stddev": 4.09446137212533,
+      "min": -10.0,
+      "max": 2.008001962710651,
+      "values": [
+        {
+          "vertpos": 2.008001962710651
+        }
+      ]
+    },
+    {
+      "gen": 4,
+      "nevals": 89,
+      "avg": 0.9590312565332223,
+      "stddev": 1.260046514648814,
+      "min": -10.0,
+      "max": 2.9176638292601282,
+      "values": [
+        {
+          "vertpos": 2.9176638292601282
+        }
+      ]
+    },
+    {
+      "gen": 5,
+      "nevals": 92,
+      "avg": 1.3004451169739837,
+      "stddev": 1.7689419234517307,
+      "min": -10.0,
+      "max": 3.9625713532396105,
+      "values": [
+        {
+          "vertpos": 3.9625713532396105
+        }
+      ]
+    },
+    {
+      "gen": 6,
+      "nevals": 94,
+      "avg": 1.8592242128733423,
+      "stddev": 1.4338302386700943,
+      "min": -10.0,
+      "max": 4.025262249852943,
+      "values": [
+        {
+          "vertpos": 4.025262249852943
+        }
+      ]
+    },
+    {
+      "gen": 7,
+      "nevals": 94,
+      "avg": 2.6204168460178794,
+      "stddev": 1.1485215175937729,
+      "min": 0.024629333626059235,
+      "max": 5.920106788202908,
+      "values": [
+        {
+          "vertpos": 5.920106788202908
+        }
+      ]
+    },
+    {
+      "gen": 8,
+      "nevals": 90,
+      "avg": 3.3401957639280653,
+      "stddev": 2.4775482116916163,
+      "min": -10.0,
+      "max": 8.77180720445405,
+      "values": [
+        {
+          "vertpos": 8.77180720445405
+        }
+      ]
+    },
+    {
+      "gen": 9,
+      "nevals": 96,
+      "avg": 4.787373394873315,
+      "stddev": 2.293330557947534,
+      "min": -10.0,
+      "max": 10.058370194062416,
+      "values": [
+        {
+          "vertpos": 10.058370194062416
+        }
+      ]
+    },
+    {
+      "gen": 10,
+      "nevals": 90,
+      "avg": 6.294605211688866,
+      "stddev": 2.3388819602758097,
+      "min": 2.4785035483330518,
+      "max": 15.58954536878759,
+      "values": [
+        {
+          "vertpos": 15.58954536878759
+        }
+      ]
+    },
+    {
+      "gen": 11,
+      "nevals": 90,
+      "avg": 8.520455463997628,
+      "stddev": 3.6338223342124127,
+      "min": -10.0,
+      "max": 18.063133636955314,
+      "values": [
+        {
+          "vertpos": 18.063133636955314
+        }
+      ]
+    },
+    {
+      "gen": 12,
+      "nevals": 93,
+      "avg": 11.73163907721104,
+      "stddev": 4.8477908261952285,
+      "min": 0.5127807986883539,
+      "max": 30.64332184491153,
+      "values": [
+        {
+          "vertpos": 30.64332184491153
+        }
+      ]
+    },
+    {
+      "gen": 13,
+      "nevals": 92,
+      "avg": 16.895105449042912,
+      "stddev": 7.364206482456652,
+      "min": 0.5032646416237085,
+      "max": 38.54841817679575,
+      "values": [
+        {
+          "vertpos": 38.54841817679575
+        }
+      ]
+    },
+    {
+      "gen": 14,
+      "nevals": 95,
+      "avg": 23.925473421685602,
+      "stddev": 10.974554479997591,
+      "min": 3.050999687829041,
+      "max": 58.533692466593436,
+      "values": [
+        {
+          "vertpos": 58.533692466593436
+        }
+      ]
+    },
+    {
+      "gen": 15,
+      "nevals": 93,
+      "avg": 37.243731443016664,
+      "stddev": 12.548327872155644,
+      "min": 4.832266431321941,
+      "max": 79.87948439408189,
+      "values": [
+        {
+          "vertpos": 79.87948439408189
+        }
+      ]
+    },
+    {
+      "gen": 16,
+      "nevals": 92,
+      "avg": 46.24437040484131,
+      "stddev": 18.324623510399547,
+      "min": -1.0,
+      "max": 103.25388097844305,
+      "values": [
+        {
+          "vertpos": 103.25388097844305
+        }
+      ]
+    },
+    {
+      "gen": 17,
+      "nevals": 90,
+      "avg": 56.76869947184998,
+      "stddev": 23.730724852118897,
+      "min": -1.0,
+      "max": 103.25388097844305,
+      "values": [
+        {
+          "vertpos": 103.25388097844305
+        }
+      ]
+    },
+    {
+      "gen": 18,
+      "nevals": 93,
+      "avg": 63.50864916484484,
+      "stddev": 27.64339393155424,
+      "min": -1.0,
+      "max": 106.34730251371647,
+      "values": [
+        {
+          "vertpos": 106.34730251371647
+        }
+      ]
+    },
+    {
+      "gen": 19,
+      "nevals": 93,
+      "avg": 75.03077170367817,
+      "stddev": 28.486576549251982,
+      "min": -1.0,
+      "max": 112.05420815682189,
+      "values": [
+        {
+          "vertpos": 112.05420815682189
+        }
+      ]
+    },
+    {
+      "gen": 20,
+      "nevals": 94,
+      "avg": 79.43636542455779,
+      "stddev": 28.37761390500102,
+      "min": -1.0,
+      "max": 112.05420815682189,
+      "values": [
+        {
+          "vertpos": 112.05420815682189
+        }
+      ]
+    },
+    {
+      "gen": 21,
+      "nevals": 94,
+      "avg": 85.1844581776821,
+      "stddev": 25.705881988028267,
+      "min": -1.0,
+      "max": 111.60661345307273,
+      "values": [
+        {
+          "vertpos": 112.05420815682189
+        }
+      ]
+    },
+    {
+      "gen": 22,
+      "nevals": 90,
+      "avg": 84.03886000004869,
+      "stddev": 31.041941257635855,
+      "min": -1.0,
+      "max": 114.36839579489975,
+      "values": [
+        {
+          "vertpos": 114.36839579489975
+        }
+      ]
+    },
+    {
+      "gen": 23,
+      "nevals": 92,
+      "avg": 87.1106254031516,
+      "stddev": 32.37927129267252,
+      "min": -1.0,
+      "max": 133.31203460450644,
+      "values": [
+        {
+          "vertpos": 133.31203460450644
+        }
+      ]
+    },
+    {
+      "gen": 24,
+      "nevals": 92,
+      "avg": 88.39714973820178,
+      "stddev": 38.55309348587262,
+      "min": -1.0,
+      "max": 145.5255400088691,
+      "values": [
+        {
+          "vertpos": 145.5255400088691
+        }
+      ]
+    },
+    {
+      "gen": 25,
+      "nevals": 84,
+      "avg": 100.64164660973815,
+      "stddev": 35.460583583813005,
+      "min": -1.0,
+      "max": 148.56121703341068,
+      "values": [
+        {
+          "vertpos": 148.56121703341068
+        }
+      ]
+    }
+  ]
+}
